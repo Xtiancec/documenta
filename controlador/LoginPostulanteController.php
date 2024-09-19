@@ -1,4 +1,6 @@
 <?php
+// Archivo: ../controlador/LoginPostulanteController.php
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start(); // Inicia la sesión si no está iniciada
 }
@@ -17,7 +19,12 @@ class LoginPostulanteController
 
             $username = isset($_POST['username']) ? limpiarCadena($_POST['username']) : "";
             $password = isset($_POST['password']) ? limpiarCadena($_POST['password']) : "";
-            
+
+            // Validar que los campos no estén vacíos
+            if (empty($username) || empty($password)) {
+                echo json_encode(['success' => false, 'message' => 'Por favor, rellena todos los campos.']);
+                return;
+            }
 
             // Intentar autenticar el usuario
             $result = $applicant->autenticar($username, $password);
@@ -26,17 +33,22 @@ class LoginPostulanteController
                 // Inicia sesión si la autenticación fue exitosa
                 $_SESSION['applicant_id'] = $result['id'];
                 $_SESSION['username'] = $result['username'];
+                $_SESSION['user_role'] = 'postulante'; // Establecer el rol
+                $_SESSION['user_type'] = 'applicant'; // Indicar que es un postulante
                 $_SESSION['names'] = $result['names']; // Almacenar el nombre completo
-                $_SESSION['role'] = 'postulante';
-            
+
                 // Registrar el login
                 $applicant->registrarLogin($result['id']);
-            
-                $response = ['success' => true];
+
+                $response = [
+                    'success' => true,
+                    'role' => 'postulante',
+                    'type' => 'applicant'
+                ];
             } else {
                 $response = ['success' => false, 'message' => 'Usuario o contraseña incorrectos.'];
             }
-            
+
         } catch (Exception $e) {
             logError($e->getMessage()); // Registra el error en el archivo de log
             $response = [
@@ -68,4 +80,5 @@ function logError($message) {
     file_put_contents('../logs/errors.log', date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
 }
 
+// Asumiendo que limpiarCadena está definida en Conexion.php o en otro archivo incluido
 ?>

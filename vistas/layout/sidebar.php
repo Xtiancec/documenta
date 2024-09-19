@@ -1,4 +1,4 @@
-<?php
+<?php 
 // sidebar.php
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -22,7 +22,6 @@ function hasAccess($required_roles = [], $required_types = []) {
 }
 
 ?>
-
 <aside class="left-sidebar">
     <div class="scroll-sidebar">
         <nav class="sidebar-nav">
@@ -90,7 +89,7 @@ function hasAccess($required_roles = [], $required_types = []) {
                     </li>
                 <?php endif; ?>
 
-                <!-- USUARIOS -->
+                <!-- MODULO RECURSOS HUMANOS -->
                 <?php if (hasAccess(['superadmin', 'adminrh'])): ?>
                     <li>
                         <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false">
@@ -100,22 +99,22 @@ function hasAccess($required_roles = [], $required_types = []) {
                         <ul aria-expanded="false" class="collapse">
                             <?php if (hasAccess(['superadmin', 'adminrh'])): ?>
                                 <li><a href="evaluarDocumentoPostulante.php"><i class="mdi mdi-account-plus"></i> Evaluar Documentos Postulantes</a></li>
-                                <li><a href="actualizar_usuario.php"><i class="mdi mdi-account-edit"></i> Evalular Documentos Usuarios</a></li>
+                                <li><a href="evaluarDocumentoUsuario.php"><i class="mdi mdi-account-edit"></i> Evaluar Documentos Usuarios</a></li>
                             <?php endif; ?>
-
                         </ul>
                     </li>
                 <?php endif; ?>
 
+                <!-- MODULO PROCURA -->
                 <?php if (hasAccess(['superadmin', 'adminpr'])): ?>
                     <li>
                         <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false">
-                            <i class="mdi mdi-account-multiple"></i>
+                            <i class="mdi mdi-truck-delivery"></i>
                             <span class="hide-menu"><b>MODULO PROCURA</b></span>
                         </a>
                         <ul aria-expanded="false" class="collapse">
-                            <?php if (hasAccess(['superadmin', 'adminrh'])): ?>
-                                <li><a href="registrar_usuario.php"><i class="mdi mdi-account-plus"></i>Evaluar Documentos Empresas</a></li>
+                            <?php if (hasAccess(['superadmin', 'adminpr'])): ?>
+                                <li><a href="evaluarDocumentoEmpresa.php"><i class="mdi mdi-account-plus"></i> Evaluar Documentos Empresas</a></li>
                                 <li><a href="actualizar_usuario.php"><i class="mdi mdi-account-edit"></i> Actualizar Usuario</a></li>
                             <?php endif; ?>
                         </ul>

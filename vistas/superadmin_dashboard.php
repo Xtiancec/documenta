@@ -3,13 +3,19 @@
 session_start();
 
 // Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['applicant_id']) && !isset($_SESSION['supplier_id'])) {
     header("Location: ../login.html");
     exit();
 }
 
 // Verificar el rol del usuario
-if ($_SESSION['role'] !== 'superadmin') {
+if (isset($_SESSION['user_role'])) {
+    $user_role = $_SESSION['user_role'];
+    if ($user_role !== 'superadmin') {
+        echo "No tienes permiso para acceder a esta página.";
+        exit();
+    }
+} else {
     echo "No tienes permiso para acceder a esta página.";
     exit();
 }
@@ -18,6 +24,8 @@ require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
+
+
 
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">

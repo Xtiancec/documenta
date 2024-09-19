@@ -1,7 +1,7 @@
 <?php
 // Archivo: ../controlador/LoginController.php
 
-require_once "../config/Conexion.php"; // Usar require_once para evitar inclusiones múltiples
+require_once "../config/Conexion.php";
 require_once "../modelos/User.php";
 
 class LoginController
@@ -16,7 +16,6 @@ class LoginController
             // Obtener y limpiar entradas
             $username = isset($_POST['username']) ? limpiarCadena($_POST['username']) : "";
             $password = isset($_POST['password']) ? limpiarCadena($_POST['password']) : "";
-            
 
             // Validar que los campos no estén vacíos
             if (empty($username) || empty($password)) {
@@ -31,7 +30,8 @@ class LoginController
                 session_regenerate_id(true); // Regenerar el ID de sesión para seguridad
                 $_SESSION['user_id'] = $result['id']; // Guardar el ID del usuario en la sesión
                 $_SESSION['username'] = $result['username'];
-                $_SESSION['role'] = $result['role']; // Debería ser 'adminrh'
+                $_SESSION['user_role'] = $result['role']; // 'superadmin', 'adminrh', etc.
+                $_SESSION['user_type'] = 'user'; // Indica que es un usuario del tipo 'user'
                 $_SESSION['full_name'] = $result['names'] . ' ' . $result['surname'] . ' ' . $result['lastname'];
 
                 // Registrar el login en la tabla user_access_logs
@@ -39,7 +39,8 @@ class LoginController
 
                 $response = [
                     'success' => true,
-                    'role' => $result['role']
+                    'role' => $result['role'],
+                    'type' => 'user' // Añadir el tipo de usuario en la respuesta
                 ];
             } else {
                 $response = ['success' => false, 'message' => 'Usuario o contraseña incorrectos.'];

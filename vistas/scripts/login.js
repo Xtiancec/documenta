@@ -1,10 +1,8 @@
-// Archivo: C:\xampp\htdocs\rh\scripts\login.js
-
 $(document).ready(function () {
     $("#frmAcceso").on("submit", function (e) {
         e.preventDefault(); // Evitar el envío normal del formulario
 
-        let username = $("#username").val().trim(); // Corrección: Usar el ID correcto
+        let username = $("#username").val().trim();
         let password = $("#clavea").val().trim();
 
         console.log("Formulario enviado");
@@ -18,22 +16,30 @@ $(document).ready(function () {
             success: function (data) {
                 console.log("Respuesta recibida: ", data);
                 if (data.success) {
-                    // Redireccionar según el rol
-                    switch (data.role) {
-                        case "superadmin":
-                            window.location.href = "http://localhost/rh/vistas/superadmin_dashboard.php"; 
-                            break;
-                        case "adminrh":
-                            window.location.href = "http://localhost/rh/vistas/adminrh_dashboard.php"; 
-                            break;
-                        case "adminpr":
-                            window.location.href = "http://localhost/rh/vistas/adminpr_dashboard.php"; 
-                            break;
-                        case "user":
-                            window.location.href = "http://localhost/rh/vistas/user_dashboard.php"; 
-                            break;
-                        default:
-                            $("#login-error-message").html("Rol no reconocido.");
+                    // Redireccionar según el rol y tipo
+                    if (data.type === 'user') {
+                        switch (data.role) {
+                            case "superadmin":
+                                window.location.href = "http://localhost/rh/vistas/superadmin_dashboard.php"; 
+                                break;
+                            case "adminrh":
+                                window.location.href = "http://localhost/rh/vistas/adminrh_dashboard.php"; 
+                                break;
+                            case "adminpr":
+                                window.location.href = "http://localhost/rh/vistas/adminpr_dashboard.php"; 
+                                break;
+                            case "user":
+                                window.location.href = "http://localhost/rh/vistas/user_dashboard.php"; 
+                                break;
+                            default:
+                                $("#login-error-message").html("Rol no reconocido.");
+                        }
+                    } else if (data.type === 'applicant') {
+                        window.location.href = "http://localhost/rh/vistas/dashboardApplicant.php"; 
+                    } else if (data.type === 'supplier') {
+                        window.location.href = "http://localhost/rh/vistas/supplier_dashboard.php"; 
+                    } else {
+                        $("#login-error-message").html("Tipo de usuario no reconocido.");
                     }
                 } else {
                     $("#login-error-message").html(data.message || "Usuario o contraseña incorrectos.");

@@ -1,7 +1,9 @@
 <?php
+// Archivo: ../controlador/LoginSupplierController.php
+
 require_once "../modelos/Supplier.php";
 
-class LoginController
+class LoginSupplierController
 {
     public function verificar()
     {
@@ -25,14 +27,16 @@ class LoginController
                 $_SESSION['supplier_id'] = $result['id'];
                 $_SESSION['RUC'] = $result['RUC'];
                 $_SESSION['companyName'] = $result['companyName'];
-                $_SESSION['role'] = 'supplier';
+                $_SESSION['user_role'] = 'supplier'; // Establecer el rol
+                $_SESSION['user_type'] = 'supplier'; // Indicar que es un proveedor
 
                 // Registrar el login en la tabla supplier_access_log
                 $supplier->registrarLogin($result['id']);
 
                 $response = [
                     'success' => true,
-                    'role' => 'supplier'
+                    'role' => 'supplier',
+                    'type' => 'supplier'
                 ];
             } else {
                 $response = ['success' => false, 'message' => 'Usuario o contraseña incorrectos.'];
@@ -52,7 +56,7 @@ class LoginController
 
 // Manejador de las solicitudes AJAX
 if (isset($_GET['op'])) {
-    $controller = new LoginController();
+    $controller = new LoginSupplierController();
     switch ($_GET['op']) {
         case 'verificar':
             $controller->verificar();
@@ -65,5 +69,5 @@ function logError($message) {
     file_put_contents('../logs/errors.log', date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
 }
 
-// No es necesario redefinir limpiarCadena aquí si ya está definida en Conexion.php
+// Asumiendo que limpiarCadena está definida en Conexion.php o en otro archivo incluido
 ?>
