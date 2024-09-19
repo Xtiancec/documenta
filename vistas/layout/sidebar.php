@@ -144,7 +144,7 @@ function hasAccess($required_roles = [], $required_types = []) {
                         </a>
                         <ul aria-expanded="false" class="collapse">
                             <li><a href="supplier_dashboard.php"><i class="mdi mdi-view-dashboard"></i> Dashboard Proveedor</a></li>
-                            <li><a href="supplier_details.php"><i class="mdi mdi-account-box"></i> Detalles del Proveedor</a></li>
+                            <li><a href="supplierDetails.php"><i class="mdi mdi-account-box"></i> Detalles del Proveedor</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

@@ -180,6 +180,8 @@ class Supplier
         return false;
     }
 
+    
+
     // Método para registrar el login del proveedor
     public function registrarLogin($supplier_id)
     {

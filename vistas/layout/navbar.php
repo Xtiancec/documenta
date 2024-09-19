@@ -17,14 +17,17 @@ if (isset($_SESSION['user_type'])) {
 
     switch ($user_type) {
         case 'user':
+            // Para usuarios normales, obtener el nombre completo
             $name = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : 'Usuario';
-            $display_role = ucfirst(htmlspecialchars($user_role));
+            $display_role = ucfirst(htmlspecialchars($user_role)); // 'Superadmin', 'Adminrh', etc.
             break;
         case 'applicant':
+            // Para postulantes, obtener el nombre
             $name = isset($_SESSION['names']) ? $_SESSION['names'] : 'Postulante';
             $display_role = 'Postulante';
             break;
         case 'supplier':
+            // Para proveedores, obtener el nombre de la empresa
             $name = isset($_SESSION['companyName']) ? $_SESSION['companyName'] : 'Proveedor';
             $display_role = 'Proveedor';
             break;
@@ -33,9 +36,9 @@ if (isset($_SESSION['user_type'])) {
             $display_role = '';
     }
 }
-
 ?>
 
+<!-- Inicio del HTML de la Navbar -->
 <nav class="navbar top-navbar navbar-expand-md navbar-light">
     <div class="navbar-header">
         <a class="navbar-brand" href="escritorio.php">

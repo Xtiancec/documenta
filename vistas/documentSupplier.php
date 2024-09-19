@@ -4,7 +4,7 @@
 session_start();
 
 // Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'supplier' || $_SESSION['user_role'] !== 'supplier') {
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'supplier' || $_SESSION['user_role'] !== 'proveedor') {
     header("Location: ../login.php");
     exit();
 }

@@ -1,11 +1,15 @@
 <?php
-// superadmin_dashboard.php
+// supplier_dashboard.php
 
 session_start();
 
-// Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'supplier' || $_SESSION['user_role'] !== 'supplier') {
-    header("Location: ../login.php");
+// Verificar si el usuario ha iniciado sesión y es un proveedor
+if (
+    !isset($_SESSION['user_type']) ||
+    $_SESSION['user_type'] !== 'supplier' ||
+    $_SESSION['user_role'] !== 'proveedor'
+) {
+    header("Location: ../login_supplier.php"); // Asegúrate de que esta sea la URL correcta de login
     exit();
 }
 
@@ -13,7 +17,6 @@ require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
-
 
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">
@@ -74,7 +77,7 @@ require 'layout/sidebar.php';
 
                 <!-- Mostrar los detalles registrados del proveedor -->
                 <div class="row justify-content-center">
-                    <div class="col-6">
+                    <div class="col-8">
                         <div id="datosRegistrados" style="display:none;">
                             <div class="card shadow-sm border rounded-lg" style="border-color: #17a2b8; border-radius: 15px;">
                                 <div class="card-body p-4">

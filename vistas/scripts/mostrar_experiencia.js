@@ -11,7 +11,6 @@ $(document).ready(function () {
                 console.log(response); // Verificar la respuesta en la consola
                 let data = JSON.parse(response);
                 let rows = '';
-
                 if (data.length > 0) {
                     data.forEach(function (item) {
                         rows += `<tr>
@@ -33,6 +32,7 @@ $(document).ready(function () {
             }
         });
 
+        
         // Cargar experiencia laboral
         $.ajax({
             url: "../controlador/ExperienceController.php?op=mostrarTrabajo",

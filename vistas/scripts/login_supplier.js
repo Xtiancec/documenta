@@ -1,9 +1,11 @@
+// scripts/login_supplier.js
+
 $(document).ready(function () {
     $("#frmAcceso").on("submit", function (e) {
         e.preventDefault(); // Evitar el envío normal del formulario
 
-        let username = $("#logina").val();
-        let password = $("#clavea").val();
+        let username = $("#logina").val().trim();
+        let password = $("#clavea").val().trim();
 
         if (username === "" || password === "") {
             $("#login-error-message").html("Por favor, rellena todos los campos.");
@@ -18,7 +20,7 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.success) {
                     // Redirigir al dashboard del proveedor
-                    window.location.href = "http://localhost/rh/vistas/supplierDetails.php";
+                    window.location.href = "http://localhost/rh/vistas/supplier_dashboard.php"; // Asegúrate de que esta es la URL correcta
                 } else {
                     // Mostrar mensaje de error
                     $("#login-error-message").html(data.message || "Usuario o contraseña incorrectos.");

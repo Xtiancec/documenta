@@ -1,11 +1,8 @@
 <?php
-// Archivo: ../controlador/LoginPostulanteController.php
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start(); // Inicia la sesión si no está iniciada
-}
+// ../controlador/LoginPostulanteController.php
 
 require_once "../modelos/Applicant.php";
+require_once "../config/Conexion.php"; // Asegúrate de que la ruta sea correcta
 
 class LoginPostulanteController
 {
@@ -13,7 +10,6 @@ class LoginPostulanteController
     {
         header('Content-Type: application/json'); // Forzar respuesta JSON
 
-        ob_start(); // Inicia el buffer de salida
         try {
             $applicant = new Applicant();
 
@@ -31,9 +27,11 @@ class LoginPostulanteController
 
             if ($result) {
                 // Inicia sesión si la autenticación fue exitosa
+                session_start();
+                session_regenerate_id(true); // Regenerar el ID de sesión para seguridad
                 $_SESSION['applicant_id'] = $result['id'];
                 $_SESSION['username'] = $result['username'];
-                $_SESSION['user_role'] = 'postulante'; // Establecer el rol
+                $_SESSION['user_role'] = 'postulante'; // Establecer el rol en español
                 $_SESSION['user_type'] = 'applicant'; // Indicar que es un postulante
                 $_SESSION['names'] = $result['names']; // Almacenar el nombre completo
 
@@ -42,7 +40,7 @@ class LoginPostulanteController
 
                 $response = [
                     'success' => true,
-                    'role' => 'postulante',
+                    'role' => 'postulante', // Coincidir con 'user_role'
                     'type' => 'applicant'
                 ];
             } else {
@@ -57,9 +55,6 @@ class LoginPostulanteController
             ];
         }
 
-        ob_end_clean(); // Limpia el buffer de salida
-
-        // Enviar la respuesta en formato JSON
         echo json_encode($response);
         exit();
     }
@@ -68,7 +63,7 @@ class LoginPostulanteController
 // Manejador de las solicitudes AJAX
 if (isset($_GET['op'])) {
     $controller = new LoginPostulanteController();
-    switch ($_GET['op']){
+    switch ($_GET['op']) {
         case 'verificar':
             $controller->verificar();
             break;
@@ -80,5 +75,11 @@ function logError($message) {
     file_put_contents('../logs/errors.log', date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
 }
 
-// Asumiendo que limpiarCadena está definida en Conexion.php o en otro archivo incluido
+// Asegúrate de que la función limpiarCadena está definida correctamente
+function limpiarCadena($cadena) {
+    $cadena = trim($cadena);
+    $cadena = stripslashes($cadena);
+    $cadena = htmlspecialchars($cadena);
+    return $cadena;
+}
 ?>

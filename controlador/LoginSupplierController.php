@@ -1,6 +1,7 @@
 <?php
 // Archivo: ../controlador/LoginSupplierController.php
 
+require_once "../config/Conexion.php"; // Incluir Conexion.php
 require_once "../modelos/Supplier.php";
 
 class LoginSupplierController
@@ -24,10 +25,11 @@ class LoginSupplierController
 
             if ($result) {
                 session_start();
+                session_regenerate_id(true); // Regenerar el ID de sesión para seguridad
                 $_SESSION['supplier_id'] = $result['id'];
                 $_SESSION['RUC'] = $result['RUC'];
                 $_SESSION['companyName'] = $result['companyName'];
-                $_SESSION['user_role'] = 'supplier'; // Establecer el rol
+                $_SESSION['user_role'] = 'proveedor'; // Establecer el rol en español
                 $_SESSION['user_type'] = 'supplier'; // Indicar que es un proveedor
 
                 // Registrar el login en la tabla supplier_access_log
@@ -35,7 +37,7 @@ class LoginSupplierController
 
                 $response = [
                     'success' => true,
-                    'role' => 'supplier',
+                    'role' => 'proveedor', // Coincidir con 'user_role'
                     'type' => 'supplier'
                 ];
             } else {
@@ -68,6 +70,4 @@ if (isset($_GET['op'])) {
 function logError($message) {
     file_put_contents('../logs/errors.log', date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
 }
-
-// Asumiendo que limpiarCadena está definida en Conexion.php o en otro archivo incluido
 ?>
