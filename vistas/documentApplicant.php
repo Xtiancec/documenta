@@ -1,9 +1,19 @@
 <?php
+// superadmin_dashboard.php
+
 session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
+    header("Location: ../login.php");
+    exit();
+}
+
 require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
+
 
 <div class="container-fluid">
     <div class="row page-titles">

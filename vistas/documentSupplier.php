@@ -1,9 +1,11 @@
 <?php
+// superadmin_dashboard.php
+
 session_start();
 
-// Verificar si el proveedor ha iniciado sesión
-if (!isset($_SESSION['supplier_id'])) {
-    header("Location: login_Supplier.html");
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'supplier' || $_SESSION['user_role'] !== 'supplier') {
+    header("Location: ../login.php");
     exit();
 }
 

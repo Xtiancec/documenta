@@ -1,15 +1,16 @@
 <?php
-// Asegúrate de iniciar la sesión al comienzo del archivo
+// navbar.php
+
+// Iniciar la sesión si no está iniciada
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Inicializar variables
+// Inicializar variables por defecto
 $name = 'Usuario';
-$user_role = '';
-$user_type = '';
+$display_role = '';
 
-// Verificar el tipo de usuario y asignar el nombre y rol adecuados
+// Verificar si el usuario ha iniciado sesión y determinar el tipo y rol
 if (isset($_SESSION['user_type'])) {
     $user_type = $_SESSION['user_type'];
     $user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : '';
@@ -17,17 +18,22 @@ if (isset($_SESSION['user_type'])) {
     switch ($user_type) {
         case 'user':
             $name = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : 'Usuario';
+            $display_role = ucfirst(htmlspecialchars($user_role));
             break;
         case 'applicant':
             $name = isset($_SESSION['names']) ? $_SESSION['names'] : 'Postulante';
+            $display_role = 'Postulante';
             break;
         case 'supplier':
-            $name = isset($_SESSION['companyName']) ? $_SESSION['companyName'] : 'Empresa';
+            $name = isset($_SESSION['companyName']) ? $_SESSION['companyName'] : 'Proveedor';
+            $display_role = 'Proveedor';
             break;
         default:
             $name = 'Usuario';
+            $display_role = '';
     }
 }
+
 ?>
 
 <nav class="navbar top-navbar navbar-expand-md navbar-light">
@@ -41,11 +47,11 @@ if (isset($_SESSION['user_type'])) {
     <div class="navbar-collapse">
         <ul class="navbar-nav my-lg-0">
             <li class="nav-item dropdown">
-                <?php if (!empty($user_type)): ?>
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Bienvenido, <?php echo htmlspecialchars($name); ?> (<?php echo ucfirst(htmlspecialchars($user_role)); ?>)
+                <?php if (isset($_SESSION['user_type'])): ?>
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bienvenido, <?php echo htmlspecialchars($name); ?> (<?php echo htmlspecialchars($display_role); ?>)
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right animated flipInY">
+                    <div class="dropdown-menu dropdown-menu-right animated flipInY" aria-labelledby="navbarDropdown">
                         <a href="logout.php" class="dropdown-item">Cerrar Sesión</a>
                     </div>
                 <?php else: ?>
@@ -55,5 +61,6 @@ if (isset($_SESSION['user_type'])) {
         </ul>
     </div>
 </nav>
+
 
 </header>

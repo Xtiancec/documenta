@@ -1,10 +1,11 @@
 <?php
-session_start(); // Iniciar sesión
+// superadmin_dashboard.php
 
-// Verificar si la sesión del proveedor está activa
-if (!isset($_SESSION['supplier_id'])) {
-    // Redirigir al login si no está iniciada la sesión
-    header("Location: login_proveedores.html");
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'supplier' || $_SESSION['user_role'] !== 'supplier') {
+    header("Location: ../login.php");
     exit();
 }
 
@@ -12,6 +13,7 @@ require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
+
 
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">
