@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link href="../app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../app/template/css/style.css" rel="stylesheet">
+</head>
+<body class="form">
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../assets/images/background/trabajadores.jpeg);">
+        <div class="login-box card">
+            <div class="card-body">
+                <form id="frmAcceso" method="post">
+                    <h3 class="text-center">TRABAJADORES</h3>
+                    <div class="form-group">
+                        <input class="form-control" id="username" name="username" type="text" required placeholder="RUC" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" id="clavea" name="clavea" type="password" required placeholder="Contraseña" autocomplete="current-password">
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Ingresar</button>
+                    </div>
+                    <div id="login-error-message" class="text-danger"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="../app/template/plugins/jquery/jquery.min.js"></script>
+    <script src="../app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="scripts/login.js"></script>
+</body>
+</html>
