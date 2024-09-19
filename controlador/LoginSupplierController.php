@@ -33,7 +33,12 @@ class LoginSupplierController
                 $_SESSION['user_type'] = 'supplier'; // Indicar que es un proveedor
 
                 // Registrar el login en la tabla supplier_access_log
-                $supplier->registrarLogin($result['id']);
+                $login_success = $supplier->registrarLogin($result['id']);
+
+                if (!$login_success) {
+                    echo json_encode(['success' => false, 'message' => 'Error al registrar el acceso.']);
+                    return;
+                }
 
                 $response = [
                     'success' => true,

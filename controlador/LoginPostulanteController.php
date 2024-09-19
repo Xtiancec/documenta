@@ -76,10 +76,5 @@ function logError($message) {
 }
 
 // Asegúrate de que la función limpiarCadena está definida correctamente
-function limpiarCadena($cadena) {
-    $cadena = trim($cadena);
-    $cadena = stripslashes($cadena);
-    $cadena = htmlspecialchars($cadena);
-    return $cadena;
-}
+
 ?>
