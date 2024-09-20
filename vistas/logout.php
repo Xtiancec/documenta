@@ -11,6 +11,6 @@ if (isset($_SESSION['id'])) {
 
 // Destruir sesión y redirigir al login
 session_destroy();
-header("Location: ../vistas/login.html");
+header("Location: ../vistas/login.php");
 exit();
 ?>

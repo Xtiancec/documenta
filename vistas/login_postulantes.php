@@ -61,16 +61,18 @@ if (
     <!-- End Preloader -->
 
     <!-- Main Wrapper -->
-    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/background/login-register.jpg);">
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/bgandina.jpeg);">
         <div class="login-box card">
             <div class="card-body">
                 <!-- Formulario de Login -->
                 <form class="form-horizontal form-material" id="frmAccesoPostulante" method="post">
                     <a href="javascript:void(0)" class="text-center db">
-                        <img src="../app/template/images/logo-icon.png" alt="Home" />
-                        <br />
-                        <img src="../app/template/images/logo-text.png" alt="Home" />
+                    <img src="../app/template/images/andina.png" alt="Home" width="300" height="80" />
+                        
                     </a>
+                    <br>
+                    <h2 style="text-align: center; font-weight: bold;">Postulantes</h2>
+
                     <div class="form-group m-t-40">
                         <div class="col-xs-12">
                             <input class="form-control" id="loginp" name="loginp" type="text" required placeholder="Usuario" autocomplete="username">
@@ -85,11 +87,9 @@ if (
                         <div class="col-md-12">
                             <div class="checkbox checkbox-primary pull-left p-t-0">
                                 <input id="checkbox-signup-postulante" type="checkbox" class="filled-in chk-col-light-blue">
-                                <label for="checkbox-signup-postulante"> Remember me </label>
+                                <label for="checkbox-signup-postulante"> Recordarme</label>
                             </div>
-                            <a href="javascript:void(0)" id="to-recover-postulante" class="text-dark pull-right">
-                                <i class="fa fa-lock m-r-5"></i> Forgot pwd?
-                            </a>
+                         
                         </div>
                     </div>
                     <div id="login-error-message-postulante" class="text-danger text-center mb-3"></div>
@@ -100,41 +100,32 @@ if (
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">
-                            <div class="social">
-                                <a href="javascript:void(0)" class="btn btn-facebook" data-toggle="tooltip" title="Login with Facebook">
+                        <div class="social">
+                                <a href="https://www.facebook.com/profile.php?id=100083217586884" class="btn btn-facebook" data-toggle="tooltip" title="Login with Facebook">
                                     <i aria-hidden="true" class="fa fa-facebook"></i>
                                 </a>
-                                <a href="javascript:void(0)" class="btn btn-googleplus" data-toggle="tooltip" title="Login with Google">
-                                    <i aria-hidden="true" class="fa fa-google-plus"></i>
+                                <a href="https://www.instagram.com/andinaenergy/" class="btn btn-instagram" data-toggle="tooltip" title="Login with Instagram">
+                                    <i aria-hidden="true" class="fa fa-instagram"></i>
                                 </a>
+
+                                <a href="https://x.com/andina_energy" class="btn btn-twitter" data-toggle="tooltip" title="Login with Twitter">
+                                    <i aria-hidden="true" class="fa fa-twitter"></i>
+                                </a>
+                                <a href="https://pe.linkedin.com/company/andina-energy" class="btn btn-linkedin" data-toggle="tooltip" title="Login with LinkedIn">
+                                    <i aria-hidden="true" class="fa fa-linkedin"></i>
+                                </a>
+
+                                <a href="https://www.youtube.com/@andinaenergy8668" class="btn btn-youtube" data-toggle="tooltip" title="Login with YouTube">
+                                    <i aria-hidden="true" class="fa fa-youtube"></i>
+                                </a>
+
                             </div>
                         </div>
                     </div>
-                    <div class="form-group m-b-0">
-                        <div class="col-sm-12 text-center">
-                            No tienes una cuenta? <a href="pages-register2.php" class="text-primary m-l-5"><b>Regístrate</b></a>
-                        </div>
-                    </div>
+                    
                 </form>
                 <!-- Formulario de Recuperación de Contraseña -->
-                <form class="form-horizontal" id="recoverform-postulante" method="post">
-                    <div class="form-group ">
-                        <div class="col-xs-12">
-                            <h3>Recuperar Contraseña</h3>
-                            <p class="text-muted">Ingresa tu correo electrónico y recibirás las instrucciones para restablecer tu contraseña.</p>
-                        </div>
-                    </div>
-                    <div class="form-group ">
-                        <div class="col-xs-12">
-                            <input class="form-control" id="recover-email-postulante" name="recover-email-postulante" type="email" required placeholder="Correo Electrónico">
-                        </div>
-                    </div>
-                    <div class="form-group text-center m-t-20">
-                        <div class="col-xs-12">
-                            <button class="btn btn-primary btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Restablecer</button>
-                        </div>
-                    </div>
-                </form>
+                
             </div>
         </div>
     </section>
