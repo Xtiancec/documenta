@@ -1,8 +1,11 @@
 <?php
+// superadmin_dashboard.php
+
 session_start();
 
-if (!isset($_SESSION['applicant_id'])) {
-    header("Location: login_postulantes.html");
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
+    header("Location: ../login.php");
     exit();
 }
 

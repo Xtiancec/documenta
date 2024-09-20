@@ -1,12 +1,14 @@
 <?php
-session_start(); // Iniciar sesión
+// superadmin_dashboard.php
 
-// Verificar si la sesión del postulante está activa
-if (!isset($_SESSION['applicant_id'])) {
-    // Redirigir al login si no está iniciada la sesión
-    header("Location: login_postulantes.html");
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
+    header("Location: ../login.php");
     exit();
 }
+
 require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';

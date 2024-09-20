@@ -1,6 +1,3 @@
-
-
-
 <!-- Bootstrap tether Core JavaScript -->
 <script src="../app/template/plugins/bootstrap/js/popper.min.js"></script>
 <script src="../app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
@@ -89,6 +86,8 @@
 <!-- Easy Pie Chart -->
 <script src="../app/template/plugins/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
 <script src="../app/template/plugins/jquery.easy-pie-chart/easy-pie-chart.init.js"></script>
+
+<!--c3 JavaScript -->
 
 <!-- Switch Buttons -->
 <script type="text/javascript">

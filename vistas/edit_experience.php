@@ -1,8 +1,11 @@
 <?php
-session_start(); 
+// superadmin_dashboard.php
 
-if (!isset($_SESSION['applicant_id'])) {
-    header("Location: login_postulantes.html");
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
+    header("Location: ../login.php");
     exit();
 }
 
@@ -10,7 +13,6 @@ require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
-
 <div class="row page-titles">
     <div class="col-md-6 align-self-center">
         <h3 class="text-themecolor font-weight-bold">Registrar/Editar Experiencia Laboral y Educacional</h3>

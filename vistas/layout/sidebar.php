@@ -133,7 +133,11 @@ function hasAccess($required_roles = [], $required_types = []) {
                         <ul aria-expanded="false" class="collapse">
                             <li><a href="dashboardApplicant.php"><i class="mdi mdi-view-dashboard"></i> Dashboard</a></li>
                             <li><a href="applicant_details.php"><i class="mdi mdi-account-details"></i> Detalles del Postulante</a></li>
-                            <li><a href="documentApplicant.php"><i class="mdi mdi-file"></i> Documentos del Postulante</a></li>
+                            <li><a href="experience.php"><i class="mdi mdi-file"></i> Documentos del Postulante</a></li>
+                            <li><a href="mostrar_experiencia.php"><i class="mdi mdi-file"></i> Documentos del Postulante</a></li>
+
+                            <li><a href="edit_experience.php"><i class="mdi mdi-file"></i> Documentos del Postulante</a></li>
+
                         </ul>
                     </li>
                 <?php elseif ($user_type == 'supplier'): ?>

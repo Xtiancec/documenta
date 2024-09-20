@@ -18,6 +18,7 @@ require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
 
+
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">
         <h3 class="text-themecolor">Registrar/Actualizar Detalles del Proveedor</h3>

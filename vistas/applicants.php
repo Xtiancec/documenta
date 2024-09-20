@@ -1,5 +1,13 @@
 <?php
+// superadmin_dashboard.php
 
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'user' || $_SESSION['user_role'] !== 'adminrh') {
+    header("Location: ../login.php");
+    exit();
+}
 
 
 require 'layout/header.php';
