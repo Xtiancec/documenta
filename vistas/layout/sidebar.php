@@ -137,7 +137,6 @@ function hasAccess($required_roles = [], $required_types = []) {
                             <li><a href="mostrar_experiencia.php"><i class="mdi mdi-file"></i> Documentos del Postulante</a></li>
 
                             <li><a href="edit_experience.php"><i class="mdi mdi-file"></i> Documentos del Postulante</a></li>
-
                         </ul>
                     </li>
                 <?php elseif ($user_type == 'supplier'): ?>
