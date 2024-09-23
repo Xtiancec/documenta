@@ -46,7 +46,7 @@ if (isset($_SESSION['user_type'])) {
             <span><img src="../app/template/images/texto-andina.png" width="150" height="50" alt="homepage" class="dark-logo" /></span>
         </a>
     </div>
-    
+
     <div class="navbar-collapse">
         <ul class="navbar-nav my-lg-0">
             <li class="nav-item dropdown">
@@ -64,6 +64,8 @@ if (isset($_SESSION['user_type'])) {
         </ul>
     </div>
 </nav>
+
+
 
 
 </header>

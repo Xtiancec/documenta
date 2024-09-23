@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Panel de Control ANDINA ENERGY IT">
     <meta name="author" content="ANDINA ENERGY IT">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="16x16" href="../app/template/images/icono-andina.png">
-    
+
     <!-- Título del Proyecto -->
     <title>ANDINA ENERGY</title>
 
@@ -35,14 +35,13 @@
     <link href="../app/template/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css" rel="stylesheet">
     <link href="../app/template/plugins/c3-master/c3.min.css" rel="stylesheet">
 
-   
+    <!-- FontAwesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <!-- CSS Customizado -->
     <link href="../app/template/css/style.css" rel="stylesheet">
-    
     <link href="../app/template/css/pages/card-page.css" rel="stylesheet">
     <link href="../app/template/css/pages/progressbar-page.css" rel="stylesheet">
-    
     <link href="../app/template/css/pages/easy-pie-chart.css" rel="stylesheet">
     <link href="../app/template/css/colors/default-dark.css" id="theme" rel="stylesheet">
     <link href="../app/template/css/pages/ribbon-page.css" rel="stylesheet">
@@ -51,6 +50,10 @@
 
     <!-- Cargar jQuery Primero -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Eliminar custom.js de aquí -->
+    <!-- <script src="../app/template/js/custom.js"></script> -->
+
 </head>
 
 <body class="fix-header card-no-border fix-sidebar">

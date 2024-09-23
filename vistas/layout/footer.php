@@ -1,9 +1,43 @@
+<div class="right-sidebar">
+    <div class="slimscrollright">
+        <div class="rpanel-title">
+            Panel de Servicio <span><i class="ti-close right-side-toggle"></i></span>
+        </div>
+        <div class="r-panel-body">
+            <ul id="themecolors" class="m-t-20">
+                <li><b>Con Sidebar Claro</b></li>
+                <li><a href="javascript:void(0)" data-theme="default" class="default-theme">1</a></li>
+                <li><a href="javascript:void(0)" data-theme="green" class="green-theme">2</a></li>
+                <li><a href="javascript:void(0)" data-theme="red" class="red-theme">3</a></li>
+                <li><a href="javascript:void(0)" data-theme="blue" class="blue-theme">4</a></li>
+                <li><a href="javascript:void(0)" data-theme="purple" class="purple-theme">5</a></li>
+                <li><a href="javascript:void(0)" data-theme="megna" class="megna-theme">6</a></li>
+                <li class="d-block m-t-30"><b>Con Sidebar Oscuro</b></li>
+                <li><a href="javascript:void(0)" data-theme="default-dark" class="default-dark-theme working">7</a></li>
+                <li><a href="javascript:void(0)" data-theme="green-dark" class="green-dark-theme">8</a></li>
+                <li><a href="javascript:void(0)" data-theme="red-dark" class="red-dark-theme">9</a></li>
+                <li><a href="javascript:void(0)" data-theme="blue-dark" class="blue-dark-theme">10</a></li>
+                <li><a href="javascript:void(0)" data-theme="purple-dark" class="purple-dark-theme">11</a></li>
+                <li><a href="javascript:void(0)" data-theme="megna-dark" class="megna-dark-theme">12</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+</div>
+<footer class="footer">
+    © Andina Energy IT, Derechos Reservados
+</footer>
+</div>
+
+
+
 <!-- Bootstrap tether Core JavaScript -->
 <script src="../app/template/plugins/bootstrap/js/popper.min.js"></script>
 <script src="../app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
 <!-- slimscrollbar scrollbar JavaScript -->
 <script src="../app/template/js/perfect-scrollbar.jquery.min.js"></script>
-
 
 <!--Wave Effects -->
 <script src="../app/template/js/waves.js"></script>
@@ -51,10 +85,6 @@
 <script src="../app/template/plugins/jquery-asColorPicker-master/libs/jquery-asGradient.js"></script>
 <script src="../app/template/plugins/jquery-asColorPicker-master/dist/jquery-asColorPicker.min.js"></script>
 
-
-
-
-
 <!-- Bootstrap Datepicker -->
 <script src="../app/template/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 
@@ -87,50 +117,6 @@
 <script src="../app/template/plugins/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
 <script src="../app/template/plugins/jquery.easy-pie-chart/easy-pie-chart.init.js"></script>
 
-<!--c3 JavaScript -->
-
-<!-- Switch Buttons -->
-<script type="text/javascript">
-    $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
-    var radioswitch = function() {
-        var bt = function() {
-            $(".radio-switch").on("switch-change", function() {
-                $(".radio-switch").bootstrapSwitch("toggleRadioState");
-            });
-            $(".radio-switch").on("switch-change", function() {
-                $(".radio-switch").bootstrapSwitch("toggleRadioStateAllowUncheck");
-            });
-            $(".radio-switch").on("switch-change", function() {
-                $(".radio-switch").bootstrapSwitch("toggleRadioStateAllowUncheck", false);
-            });
-        };
-        return {
-            init: function() {
-                bt();
-            }
-        };
-    }();
-    $(document).ready(function() {
-        radioswitch.init();
-    });
-</script>
-
-<!-- Print Area -->
-<script src="../app/template/js/jquery.PrintArea.js"></script>
-<script>
-    $(document).ready(function() {
-        $("#print").click(function() {
-            var mode = 'iframe'; //popup
-            var close = mode == "popup";
-            var options = {
-                mode: mode,
-                popClose: close
-            };
-            $("div.printableArea").printArea(options);
-        });
-    });
-</script>
-
 <!-- DataTables and Buttons -->
 <script src="../app/template/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
@@ -141,8 +127,19 @@
 <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 
-<!-- Style Switcher -->
-<script src="../app/template/plugins/styleswitcher/jQuery.style.switcher.js"></script>
+<!-- Style Switcher: Incluir store.js y jQuery.style.switcher.js antes de custom.js -->
+
+
+<!-- Incluir custom.js después de jQuery.style.switcher.js -->
+ <!-- Incluir custom.js después de jQuery.style.switcher.js -->
+<script src="../app/template/js/custom.js"></script>
+
+<!-- Incluir theme-switcher.js después de custom.js -->
+ 
+
+<script src="scripts/custom.js"></script>
+
+<script src="../app/template/js/theme-switcher.js"></script>
 
 </body>
 

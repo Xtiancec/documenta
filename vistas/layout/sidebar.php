@@ -1,4 +1,4 @@
-<?php 
+<?php
 // sidebar.php
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,11 +9,12 @@ $user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : '';
 $user_type = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : '';
 
 // Función para verificar permisos
-function hasAccess($required_roles = [], $required_types = []) {
+function hasAccess($required_roles = [], $required_types = [])
+{
     global $user_role, $user_type;
     // Agregar depuración
     error_log("Verificando acceso: Rol actual: $user_role, Tipo actual: $user_type");
-    
+
     // Verificar roles y tipos de usuario
     $role_access = empty($required_roles) || in_array($user_role, $required_roles);
     $type_access = empty($required_types) || in_array($user_type, $required_types);
@@ -189,3 +190,9 @@ function hasAccess($required_roles = [], $required_types = []) {
         <!-- ============================================================== -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- ============================================================== -->
+
+        <div class="">
+            <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10">
+                <i class="ti-settings text-white"></i>
+            </button>
+        </div>
