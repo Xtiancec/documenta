@@ -1,7 +1,8 @@
 <?php
 require_once '../config/Conexion.php';
 
-class Jobs {
+class Jobs
+{
 
     // Método para insertar un nuevo puesto de trabajo
     public function insertar($position_name, $area_id)
@@ -105,34 +106,43 @@ class Jobs {
     }
 
     // **Nueva Función para Listar Puestos por Área**
+
+
+
+
+    public function listarFiltrado($company_id, $area_id, $position_id)
+    {
+        $sql = "SELECT j.*, a.area_name, c.company_name FROM jobs j 
+            INNER JOIN areas a ON j.area_id = a.id 
+            INNER JOIN companies c ON a.company_id = c.id 
+            WHERE 1=1";
+
+        if (!empty($company_id)) {
+            $sql .= " AND c.id = '$company_id'";
+        }
+
+        if (!empty($area_id)) {
+            $sql .= " AND a.id = '$area_id'";
+        }
+
+        if (!empty($position_id)) {
+            $sql .= " AND j.id = '$position_id'";
+        }
+
+        return ejecutarConsulta($sql);
+    }
+
+    public function listarPuestosActivos()
+    {
+        $sql = "SELECT id, position_name FROM jobs WHERE is_active = 1 ORDER BY position_name ASC";
+        return ejecutarConsulta($sql);
+    }
+
+    // Listar puestos de trabajo por Área
     public function listar_por_area($area_id)
     {
         $area_id = limpiarCadena($area_id);
         $sql = "SELECT id, position_name FROM jobs WHERE is_active = 1 AND area_id = '$area_id' ORDER BY position_name ASC";
         return ejecutarConsulta($sql);
     }
-
-    public function listarFiltrado($company_id, $area_id, $position_id)
-{
-    $sql = "SELECT j.*, a.area_name, c.company_name FROM jobs j 
-            INNER JOIN areas a ON j.area_id = a.id 
-            INNER JOIN companies c ON a.company_id = c.id 
-            WHERE 1=1";
-
-    if (!empty($company_id)) {
-        $sql .= " AND c.id = '$company_id'";
-    }
-
-    if (!empty($area_id)) {
-        $sql .= " AND a.id = '$area_id'";
-    }
-
-    if (!empty($position_id)) {
-        $sql .= " AND j.id = '$position_id'";
-    }
-
-    return ejecutarConsulta($sql);
 }
-
-}
-?>

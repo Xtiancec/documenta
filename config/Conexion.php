@@ -1,20 +1,27 @@
 <?php
+// Conexion.php
+
 require_once "global.php";
 
 $conexion = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 mysqli_query($conexion, 'SET NAMES "' . DB_ENCODE . '"');
 
-//muestra posible error en la conexion
+// Muestra posible error en la conexión
 if (mysqli_connect_errno()) {
-    printf("Falló en la conexion con la base de datos: %s\n", mysqli_connect_error());
+    printf("Falló en la conexión con la base de datos: %s\n", mysqli_connect_error());
     exit();
 }
 
 if (!function_exists('ejecutarConsulta')) {
-    
 
-
+    /**
+     * Ejecuta una consulta SQL con parámetros y devuelve el resultado.
+     *
+     * @param string $sql La consulta SQL con placeholders (?).
+     * @param array $params Los parámetros para reemplazar los placeholders.
+     * @return mixed El resultado de la consulta o false en caso de error.
+     */
     function ejecutarConsulta($sql, $params = [])
     {
         global $conexion;
@@ -22,44 +29,78 @@ if (!function_exists('ejecutarConsulta')) {
         // Preparar la consulta
         $stmt = $conexion->prepare($sql);
         if ($stmt === false) {
-            echo "Error en la preparación de la consulta: " . $conexion->error;
+            error_log("Error en la preparación de la consulta: " . $conexion->error);
             return false;
         }
         
         // Vincular los parámetros si existen
         if (!empty($params)) {
-            $types = str_repeat('s', count($params)); // Modificar según los tipos de los parámetros
+            $types = '';
+            foreach ($params as $param) {
+                if (is_int($param)) {
+                    $types .= 'i';
+                } elseif (is_double($param)) {
+                    $types .= 'd';
+                } else {
+                    $types .= 's';
+                }
+            }
             $stmt->bind_param($types, ...$params);  // Desempaquetar el array de parámetros
         }
     
         // Ejecutar la consulta
         if ($stmt->execute()) {
             // Para `SELECT`, devolver el resultado
-            if (strpos($sql, 'SELECT') === 0) {
+            if (stripos(trim($sql), 'SELECT') === 0) {
                 return $stmt->get_result();
             }
             return true; // Para `UPDATE`, `DELETE` o `INSERT`, solo devolver éxito
         } else {
-            echo "Error en la consulta: " . $stmt->error;
+            error_log("Error en la ejecución de la consulta: " . $stmt->error);
             return false;
         }
     }
     
-    
-    function ejecutarConsultaSimpleFila($sql)
+    /**
+     * Ejecuta una consulta SQL que devuelve una sola fila.
+     *
+     * @param string $sql La consulta SQL con placeholders (?).
+     * @param array $params Los parámetros para reemplazar los placeholders.
+     * @return mixed Un array asociativo con la fila o false en caso de error.
+     */
+    function ejecutarConsultaSimpleFila($sql, $params = [])
     {
-        global $conexion;
-        $query = $conexion->query($sql);
-        $row = $query->fetch_assoc();
-        return $row;
-    }
-    function ejecutarConsulta_retornarID($sql)
-    {
-        global $conexion;
-        $query = $conexion->query($sql);
-        return $conexion->insert_id;
+        $result = ejecutarConsulta($sql, $params);
+        if ($result === false) {
+            return false;
+        }
+        
+        return $result->fetch_assoc();
     }
 
+    /**
+     * Ejecuta una consulta SQL y retorna el ID insertado.
+     *
+     * @param string $sql La consulta SQL con placeholders (?).
+     * @param array $params Los parámetros para reemplazar los placeholders.
+     * @return mixed El ID insertado o false en caso de error.
+     */
+    function ejecutarConsulta_retornarID($sql, $params = [])
+    {
+        global $conexion;
+        $result = ejecutarConsulta($sql, $params);
+        if ($result) {
+            return $conexion->insert_id;
+        }
+        return false;
+    }
+
+    /**
+     * Limpia una cadena para prevenir inyecciones SQL y ataques XSS.
+     *
+     * @param string $str La cadena a limpiar.
+     * @return string La cadena limpia.
+     */
     function limpiarCadena($str)
     {
         global $conexion;
@@ -67,27 +108,25 @@ if (!function_exists('ejecutarConsulta')) {
         return htmlspecialchars($str);
     }
 
-    function ejecutarConsultaArray($sql)
-{
-    global $conexion;
-    $query = $conexion->query($sql);
-    
-    // Verifica si la consulta fue exitosa
-    if (!$query) {
-        echo "Error en la consulta: " . $conexion->error;
-        return false;
+    /**
+     * Ejecuta una consulta SQL que devuelve múltiples filas como un array.
+     *
+     * @param string $sql La consulta SQL con placeholders (?).
+     * @param array $params Los parámetros para reemplazar los placeholders.
+     * @return mixed Un array de arrays asociativos con las filas o false en caso de error.
+     */
+    function ejecutarConsultaArray($sql, $params = [])
+    {
+        $result = ejecutarConsulta($sql, $params);
+        if ($result === false) {
+            return false;
+        }
+        
+        $resultArray = array();
+        while ($row = $result->fetch_assoc()) {
+            $resultArray[] = $row;
+        }
+        return $resultArray;
     }
-    
-    // Crea un arreglo para almacenar los resultados
-    $resultArray = array();
-    
-    // Itera sobre cada fila del resultado y la agrega al arreglo
-    while ($row = $query->fetch_assoc()) {
-        $resultArray[] = $row;
-    }
-    
-    // Retorna el arreglo con todas las filas
-    return $resultArray;
 }
-
-}
+?>

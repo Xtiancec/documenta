@@ -1,7 +1,10 @@
 <?php
-require_once "../config/Conexion.php";        // Usar require_once
-require_once "../modelos/User.php";           // Usar require_once
-require_once "../modelos/JobPositions.php";   // Usar require_once
+// UserController.php
+
+require_once "../config/Conexion.php";
+require_once "../modelos/User.php";
+require_once "../modelos/Jobs.php";
+
 class UserController
 {
     public function __construct() {}
@@ -12,42 +15,66 @@ class UserController
         $user = new User();
         $result = $user->listar();
 
+        if (!$result) {
+            error_log("Error al obtener la lista de usuarios.");
+            echo json_encode([
+                "draw" => isset($_GET['draw']) ? intval($_GET['draw']) : 1,
+                "recordsTotal" => 0,
+                "recordsFiltered" => 0,
+                "data" => []
+            ]);
+            exit();
+        }
+
         $data = array();
+        $total = 0;
+
         while ($reg = $result->fetch_object()) {
             $full_name = "{$reg->lastname} {$reg->surname} {$reg->names}";
             $data[] = array(
-                "0" => $reg->id,
-                "1" => $reg->company_name,
-                "2" => $reg->position_name,
-                "3" => $reg->username,
-                "4" => $full_name,
-                "5" => $reg->email,                
-                "6" => $reg->role,
-                "7" => $reg->is_active ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>',
-                "8" => $reg->is_active
-                    ? '<button class="btn btn-warning" onclick="mostrar(' . $reg->id . ')"><i class="fa fa-pencil"></i></button>' .
-                    ' <button class="btn btn-danger" onclick="desactivar(' . $reg->id . ')"><i class="fa fa-close"></i></button>' .
-                    ' <button class="btn btn-info" onclick="mostrarHistorial(' . $reg->id . ')"><i class="fa fa-clock-o"></i></button>'
-                    : '<button class="btn btn-primary" onclick="activar(' . $reg->id . ')"><i class="fa fa-check"></i></button>'
+                "id" => $reg->id,
+                "company_name" => htmlspecialchars($reg->company_name),
+                "area_name" => htmlspecialchars($reg->area_name),
+                "position_name" => htmlspecialchars($reg->position_name),
+                "identification_number" => htmlspecialchars($reg->identification_number),
+                "full_name" => htmlspecialchars($full_name),
+                "email" => htmlspecialchars($reg->email),
+                "role" => htmlspecialchars($reg->role),
+                "is_active" => $reg->is_active ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>',
+                "options" => $reg->is_active
+                    ? '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->id . ')"><i class="fa fa-pencil"></i></button> 
+                       <button class="btn btn-danger btn-sm" onclick="desactivar(' . $reg->id . ')"><i class="fa fa-close"></i></button> 
+                       <button class="btn btn-info btn-sm" onclick="mostrarHistorial(' . $reg->id . ')"><i class="fa fa-clock-o"></i></button>'
+                    : '<button class="btn btn-primary btn-sm" onclick="activar(' . $reg->id . ')"><i class="fa fa-check"></i></button>'
             );
+            $total++;
         }
 
+        // Obtener parámetros enviados por DataTables
+        $draw = isset($_GET['draw']) ? intval($_GET['draw']) : 1;
+        $recordsTotal = $total;
+        $recordsFiltered = $total; // Ajusta esto si implementas filtrado en el servidor
+
         $results = array(
-            "sEcho" => 1,
-            "iTotalRecords" => count($data),
-            "iTotalDisplayRecords" => count($data),
-            "aaData" => $data
+            "draw" => $draw,
+            "recordsTotal" => $recordsTotal,
+            "recordsFiltered" => $recordsFiltered,
+            "data" => $data
         );
 
         echo json_encode($results);
     }
 
-    // Función para guardar o editar un usuario
+    // Función para guardar un nuevo usuario
     public function insertar()
     {
         $user = new User();
 
+        // Recibir y limpiar los datos del formulario
         $company_id = isset($_POST["company_id"]) ? limpiarCadena($_POST["company_id"]) : "";
+        $area_id = isset($_POST["area_id"]) ? limpiarCadena($_POST["area_id"]) : "";
+        $identification_type = isset($_POST["identification_type"]) ? limpiarCadena($_POST["identification_type"]) : "";
+        $identification_number = isset($_POST["identification_number"]) ? limpiarCadena($_POST["identification_number"]) : "";
         $username = isset($_POST["username"]) ? limpiarCadena($_POST["username"]) : "";
         $email = isset($_POST["email"]) ? limpiarCadena($_POST["email"]) : "";
         $lastname = isset($_POST["lastname"]) ? limpiarCadena($_POST["lastname"]) : "";
@@ -56,18 +83,45 @@ class UserController
         $nacionality = isset($_POST["nacionality"]) ? limpiarCadena($_POST["nacionality"]) : "";
         $role = isset($_POST["role"]) ? limpiarCadena($_POST["role"]) : "";
         $job_id = isset($_POST["job_id"]) ? limpiarCadena($_POST["job_id"]) : "";
+        $is_employee = isset($_POST["is_employee"]) ? limpiarCadena($_POST["is_employee"]) : 1;
 
-        $rspta = $user->insertar($company_id, $username, $email, $lastname, $surname, $names, $nacionality, $role, $job_id);
-        echo $rspta ? "Usuario registrado correctamente" : "No se pudo registrar el usuario";
+        $rspta = $user->insertar(
+            $company_id,
+            $area_id,
+            $identification_type,
+            $identification_number,
+            $username,
+            $email,
+            $lastname,
+            $surname,
+            $names,
+            $nacionality,
+            $role,
+            $job_id,
+            $is_employee
+        );
+
+        // Verificar la respuesta y retornar JSON
+        if ($rspta === "Usuario registrado correctamente.") {
+            echo json_encode(['success' => true, 'message' => $rspta]);
+        } elseif ($rspta === "Usuario creado, pero el correo no se pudo enviar.") {
+            echo json_encode(['success' => true, 'message' => $rspta]);
+        } else {
+            echo json_encode(['success' => false, 'message' => $rspta]);
+        }
     }
 
-
+    // Función para actualizar un usuario
     public function actualizar()
     {
         $user = new User();
 
+        // Recibir y limpiar los datos del formulario
         $id = isset($_POST["idUpdate"]) ? limpiarCadena($_POST["idUpdate"]) : "";
         $company_id = isset($_POST["company_idUpdate"]) ? limpiarCadena($_POST["company_idUpdate"]) : "";
+        $area_id = isset($_POST["area_idUpdate"]) ? limpiarCadena($_POST["area_idUpdate"]) : "";
+        $identification_type = isset($_POST["identification_typeUpdate"]) ? limpiarCadena($_POST["identification_typeUpdate"]) : "";
+        $identification_number = isset($_POST["identification_numberUpdate"]) ? limpiarCadena($_POST["identification_numberUpdate"]) : "";
         $username = isset($_POST["usernameUpdate"]) ? limpiarCadena($_POST["usernameUpdate"]) : "";
         $email = isset($_POST["emailUpdate"]) ? limpiarCadena($_POST["emailUpdate"]) : "";
         $lastname = isset($_POST["lastnameUpdate"]) ? limpiarCadena($_POST["lastnameUpdate"]) : "";
@@ -76,19 +130,32 @@ class UserController
         $nacionality = isset($_POST["nacionalityUpdate"]) ? limpiarCadena($_POST["nacionalityUpdate"]) : "";
         $role = isset($_POST["roleUpdate"]) ? limpiarCadena($_POST["roleUpdate"]) : "";
         $job_id = isset($_POST["job_idUpdate"]) ? limpiarCadena($_POST["job_idUpdate"]) : "";
+        $is_employee = isset($_POST["is_employeeUpdate"]) ? limpiarCadena($_POST["is_employeeUpdate"]) : 1;
 
-        // Depurar los valores recibidos
-        error_log("Valores recibidos para actualizar - ID: $id, Company ID: $company_id, Job ID: $job_id, Username: $username, Email: $email");
+        $rspta = $user->editar(
+            $id,
+            $company_id,
+            $area_id,
+            $identification_type,
+            $identification_number,
+            $username,
+            $email,
+            $lastname,
+            $surname,
+            $names,
+            $nacionality,
+            $role,
+            $job_id,
+            $is_employee
+        );
 
-        $rspta = $user->editar($id, $company_id, $username, $email, $lastname, $surname, $names, $nacionality, $role, $job_id);
-
-        if ($rspta) {
-            echo "Usuario actualizado correctamente";
+        // Verificar la respuesta y retornar JSON
+        if ($rspta === "Usuario actualizado correctamente.") {
+            echo json_encode(['success' => true, 'message' => $rspta]);
         } else {
-            echo "Error al actualizar el usuario";
+            echo json_encode(['success' => false, 'message' => $rspta]);
         }
     }
-
 
     // Función para mostrar un usuario específico
     public function mostrar()
@@ -96,17 +163,25 @@ class UserController
         $user = new User();
         $id = isset($_POST["id"]) ? limpiarCadena($_POST["id"]) : "";
         $rspta = $user->mostrar($id);
-        echo json_encode($rspta);
+        if ($rspta) {
+            echo json_encode($rspta);
+        } else {
+            echo json_encode(null);
+        }
     }
 
-    // Función para desactivar un usuario
     // Función para activar un usuario
     public function activar()
     {
         $user = new User();
         $id = isset($_POST["id"]) ? limpiarCadena($_POST["id"]) : "";
         $rspta = $user->activar($id);
-        echo $rspta ? "Usuario activado correctamente" : "No se pudo activar el usuario";
+
+        if ($rspta === "Usuario activado correctamente.") {
+            echo json_encode(['success' => true, 'message' => $rspta]);
+        } else {
+            echo json_encode(['success' => false, 'message' => $rspta]);
+        }
     }
 
     // Función para desactivar un usuario
@@ -115,7 +190,38 @@ class UserController
         $user = new User();
         $id = isset($_POST["id"]) ? limpiarCadena($_POST["id"]) : "";
         $rspta = $user->desactivar($id);
-        echo $rspta ? "Usuario desactivado correctamente" : "No se pudo desactivar el usuario";
+
+        if ($rspta === "Usuario desactivado correctamente.") {
+            echo json_encode(['success' => true, 'message' => $rspta]);
+        } else {
+            echo json_encode(['success' => false, 'message' => $rspta]);
+        }
+    }
+
+    // Función para listar Áreas por Empresa
+    public function listarAreasPorEmpresa()
+    {
+        $company_id = isset($_POST["company_id"]) ? limpiarCadena($_POST["company_id"]) : "";
+        $user = new User();
+        $rspta = $user->listarAreasPorEmpresa($company_id);
+        if ($rspta) {
+            echo json_encode($rspta->fetch_all(MYSQLI_ASSOC));
+        } else {
+            echo json_encode([]);
+        }
+    }
+
+    // Función para listar Puestos por Área
+    public function listarPuestosPorArea()
+    {
+        $area_id = isset($_POST["area_id"]) ? limpiarCadena($_POST["area_id"]) : "";
+        $jobPositions = new Jobs();
+        $rspta = $jobPositions->listar_por_area($area_id);
+        if ($rspta) {
+            echo json_encode($rspta->fetch_all(MYSQLI_ASSOC));
+        } else {
+            echo json_encode([]);
+        }
     }
 
     // Función para listar todas las empresas (para los selects)
@@ -123,18 +229,25 @@ class UserController
     {
         $user = new User();
         $rspta = $user->listarEmpresas();
-        echo json_encode($rspta->fetch_all(MYSQLI_ASSOC));
+        if ($rspta) {
+            echo json_encode($rspta->fetch_all(MYSQLI_ASSOC));
+        } else {
+            echo json_encode([]);
+        }
     }
 
     // Función para listar todos los puestos de trabajo activos (para el select)
     public function listarPuestosActivos()
     {
-        $jobPositions = new JobPositions();
+        $jobPositions = new Jobs();
         $rspta = $jobPositions->listarPuestosActivos();
-        echo json_encode($rspta->fetch_all(MYSQLI_ASSOC));
+        if ($rspta) {
+            echo json_encode($rspta->fetch_all(MYSQLI_ASSOC));
+        } else {
+            echo json_encode([]);
+        }
     }
 
-    // Función para obtener el historial de accesos de un usuario
     // Función para obtener el historial de accesos de un usuario
     public function obtenerHistorialAcceso()
     {
@@ -146,7 +259,7 @@ class UserController
         if ($history) {
             echo json_encode(['success' => true, 'history' => $history->fetch_all(MYSQLI_ASSOC)]);
         } else {
-            echo json_encode(['success' => false]);
+            echo json_encode(['success' => false, 'message' => 'No se pudo obtener el historial de accesos.']);
         }
         exit();
     }
@@ -160,18 +273,43 @@ class UserController
         $newPassword = isset($_POST["newPassword"]) ? limpiarCadena($_POST["newPassword"]) : "";
 
         $rspta = $user->cambiarPassword($id, $newPassword);
-        echo $rspta ? "Contraseña actualizada correctamente" : "No se pudo actualizar la contraseña";
+        if ($rspta === "Contraseña actualizada correctamente.") {
+            echo json_encode(['success' => true, 'message' => $rspta]);
+        } else {
+            echo json_encode(['success' => false, 'message' => $rspta]);
+        }
+    }
+
+    // Función para verificar duplicados de identificación_number y username
+    public function verificarDuplicado()
+    {
+        $user = new User();
+        $identification_number = isset($_POST["identification_number"]) ? limpiarCadena($_POST["identification_number"]) : "";
+        $identification_type = isset($_POST["identification_type"]) ? limpiarCadena($_POST["identification_type"]) : "";
+        $username = isset($_POST["username"]) ? limpiarCadena($_POST["username"]) : "";
+        $userId = isset($_POST["userId"]) ? limpiarCadena($_POST["userId"]) : null;
+
+        // Verificar si identification_number ya existe
+        $identificacionExiste = $user->verificarDuplicadoIdentificationNumber($identification_number, $identification_type, $userId);
+
+        // Verificar si username ya existe
+        $usernameExiste = $user->verificarDuplicadoUsername($username, $userId);
+
+        // Responder con claves claras
+        echo json_encode([
+            'existsIdentificationNumber' => $identificacionExiste,
+            'existsUsername' => $usernameExiste
+        ]);
     }
 }
 
-//el toastify dice actualizado, pero no actualiza en la base de datos
-if (isset($_GET["op"])) {
+// Manejo de operaciones
+if (isset($_GET['op'])) {
     $controller = new UserController();
-    switch ($_GET["op"]) {
+    switch ($_GET['op']) {
         case 'listar':
             $controller->listar();
             break;
-        // Resto de los casos
         case 'insertar':
             $controller->insertar();
             break;
@@ -181,11 +319,17 @@ if (isset($_GET["op"])) {
         case 'mostrar':
             $controller->mostrar();
             break;
+        case 'activar':
+            $controller->activar();
+            break;
         case 'desactivar':
             $controller->desactivar();
             break;
-        case 'activar':
-            $controller->activar();
+        case 'listarAreasPorEmpresa':
+            $controller->listarAreasPorEmpresa();
+            break;
+        case 'listarPuestosPorArea':
+            $controller->listarPuestosPorArea();
             break;
         case 'listarEmpresas':
             $controller->listarEmpresas();
@@ -193,11 +337,18 @@ if (isset($_GET["op"])) {
         case 'listarPuestosActivos':
             $controller->listarPuestosActivos();
             break;
-        case 'cambiarPassword':
-            $controller->cambiarPassword();
-            break;
         case 'obtenerHistorialAcceso':
             $controller->obtenerHistorialAcceso();
             break;
+        case 'cambiarPassword':
+            $controller->cambiarPassword();
+            break;
+        case 'verificarDuplicado':
+            $controller->verificarDuplicado();
+            break;
+        default:
+            echo json_encode(['success' => false, 'message' => 'Operación no válida.']);
+            break;
     }
 }
+?>
