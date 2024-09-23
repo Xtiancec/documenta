@@ -1,23 +1,20 @@
 <?php
+// superadmin_dashboard.php
 
 session_start();
 
 // Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.html");
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'user' || $_SESSION['user_role'] !== 'superadmin') {
+    header("Location: ../login.php");
     exit();
 }
 
-// Verificar el rol del usuario
-if ($_SESSION['role'] !== 'superadmin' && $_SESSION['role'] !== 'adminrh') {
-    echo "No tienes permiso para acceder a esta página.";
-    exit();
-}
 
 require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
+
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">
         <h3 class="text-themecolor">Gestionar Puestos</h3>
