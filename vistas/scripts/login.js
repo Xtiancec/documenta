@@ -5,7 +5,7 @@ $(document).ready(function () {
         e.preventDefault(); // Evitar el envío normal del formulario
 
         let username = $("#username").val().trim();
-        let password = $("#clavea").val().trim();
+        let password = $("#password").val().trim(); // Asegúrate de que el ID coincide con el HTML
 
         // Validación básica
         if (username === "" || password === "") {
@@ -17,14 +17,11 @@ $(document).ready(function () {
             return;
         }
 
-        // Mostrar preloader o deshabilitar el botón si es necesario
-        // Por ejemplo:
-        // $("#login-button").prop('disabled', true);
-
+        // Enviar la solicitud AJAX
         $.ajax({
             url: "../controlador/LoginController.php?op=verificar",
             method: "POST",
-            data: { username: username, password: password },
+            data: { username: username, password: password }, // Enviar 'password'
             dataType: "json",
             success: function (data) {
                 if (data.success) {
@@ -32,16 +29,16 @@ $(document).ready(function () {
                     if (data.type === 'user') {
                         switch (data.role) {
                             case "superadmin":
-                                window.location.href = "superadmin_dashboard.php"; 
+                                window.location.href = "dashboardSuperadmin.php"; 
                                 break;
                             case "adminrh":
-                                window.location.href = "adminrh_dashboard.php"; 
+                                window.location.href = "dashboardAdminRH.php"; 
                                 break;
                             case "adminpr":
-                                window.location.href = "adminpr_dashboard.php"; 
+                                window.location.href = "dashboardAdminPR.php"; 
                                 break;
                             case "user":
-                                window.location.href = "user_dashboard.php"; 
+                                window.location.href = "dashboardUser.php"; 
                                 break;
                             default:
                                 Swal.fire({
@@ -53,7 +50,7 @@ $(document).ready(function () {
                     } else if (data.type === 'applicant') {
                         window.location.href = "dashboardApplicant.php"; 
                     } else if (data.type === 'supplier') {
-                        window.location.href = "supplier_dashboard.php"; 
+                        window.location.href = "dashboardSupplier.php"; 
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -80,8 +77,6 @@ $(document).ready(function () {
             },
             complete: function () {
                 // Rehabilitar el botón o ocultar el preloader si es necesario
-                // Por ejemplo:
-                // $("#login-button").prop('disabled', false);
             }
         });
     });

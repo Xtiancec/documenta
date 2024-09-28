@@ -43,7 +43,7 @@ if (isset($_SESSION['user_type'])) {
     <div class="navbar-header">
         <a class="navbar-brand" href="escritorio.php">
             <b><img src="../app/template/images/icono-andina.png" width="50" height="50" alt="homepage" class="dark-logo" /></b>
-            <span><img src="../app/template/images/texto-andina.png" width="150" height="50" alt="homepage" class="dark-logo" /></span>
+            <span><img src="../app/template/images/logo.png" width="150" height="50" alt="homepage" class="dark-logo" /></span>
         </a>
     </div>
 

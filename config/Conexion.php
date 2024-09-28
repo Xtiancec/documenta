@@ -1,6 +1,4 @@
-<?php
-// Conexion.php
-
+<?php 
 require_once "global.php";
 
 $conexion = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
@@ -15,13 +13,6 @@ if (mysqli_connect_errno()) {
 
 if (!function_exists('ejecutarConsulta')) {
 
-    /**
-     * Ejecuta una consulta SQL con parámetros y devuelve el resultado.
-     *
-     * @param string $sql La consulta SQL con placeholders (?).
-     * @param array $params Los parámetros para reemplazar los placeholders.
-     * @return mixed El resultado de la consulta o false en caso de error.
-     */
     function ejecutarConsulta($sql, $params = [])
     {
         global $conexion;
@@ -29,78 +20,87 @@ if (!function_exists('ejecutarConsulta')) {
         // Preparar la consulta
         $stmt = $conexion->prepare($sql);
         if ($stmt === false) {
-            error_log("Error en la preparación de la consulta: " . $conexion->error);
+            echo "Error en la preparación de la consulta: " . $conexion->error;
             return false;
         }
         
         // Vincular los parámetros si existen
         if (!empty($params)) {
-            $types = '';
-            foreach ($params as $param) {
-                if (is_int($param)) {
-                    $types .= 'i';
-                } elseif (is_double($param)) {
-                    $types .= 'd';
-                } else {
-                    $types .= 's';
-                }
-            }
+            $types = str_repeat('s', count($params)); // Modificar según los tipos de los parámetros
             $stmt->bind_param($types, ...$params);  // Desempaquetar el array de parámetros
         }
     
         // Ejecutar la consulta
         if ($stmt->execute()) {
             // Para `SELECT`, devolver el resultado
-            if (stripos(trim($sql), 'SELECT') === 0) {
+            if (strpos($sql, 'SELECT') === 0) {
                 return $stmt->get_result();
             }
             return true; // Para `UPDATE`, `DELETE` o `INSERT`, solo devolver éxito
         } else {
-            error_log("Error en la ejecución de la consulta: " . $stmt->error);
+            echo "Error en la consulta: " . $stmt->error;
             return false;
         }
     }
-    
-    /**
-     * Ejecuta una consulta SQL que devuelve una sola fila.
-     *
-     * @param string $sql La consulta SQL con placeholders (?).
-     * @param array $params Los parámetros para reemplazar los placeholders.
-     * @return mixed Un array asociativo con la fila o false en caso de error.
-     */
     function ejecutarConsultaSimpleFila($sql, $params = [])
-    {
-        $result = ejecutarConsulta($sql, $params);
-        if ($result === false) {
-            return false;
-        }
-        
-        return $result->fetch_assoc();
+{
+    global $conexion;  // Asegúrate de tener acceso a la conexión a la base de datos
+
+    // Prepara la consulta
+    $stmt = $conexion->prepare($sql);
+    if ($stmt === false) {
+        error_log("Error en la preparación de la consulta: " . $conexion->error);
+        return null;
     }
 
-    /**
-     * Ejecuta una consulta SQL y retorna el ID insertado.
-     *
-     * @param string $sql La consulta SQL con placeholders (?).
-     * @param array $params Los parámetros para reemplazar los placeholders.
-     * @return mixed El ID insertado o false en caso de error.
-     */
-    function ejecutarConsulta_retornarID($sql, $params = [])
+    // Si hay parámetros, los ligamos a la consulta preparada
+    if (!empty($params)) {
+        // Determinar los tipos de datos
+        $types = '';
+        foreach ($params as $param) {
+            if (is_int($param)) {
+                $types .= 'i';
+            } elseif (is_double($param)) {
+                $types .= 'd';
+            } else {
+                $types .= 's';
+            }
+        }
+        if (!$stmt->bind_param($types, ...$params)) {
+            error_log("Error en bind_param: " . $stmt->error);
+            return null;
+        }
+    }
+
+    // Ejecuta la consulta
+    if (!$stmt->execute()) {
+        error_log("Error en la ejecución de la consulta: " . $stmt->error);
+        return null;
+    }
+
+    // Obtén el resultado
+    $resultado = $stmt->get_result();
+    if ($resultado === false) {
+        error_log("Error al obtener el resultado: " . $stmt->error);
+        return null;
+    }
+
+    // Verifica si se obtuvo una fila y devuélvela como un array asociativo
+    if ($fila = $resultado->fetch_assoc()) {
+        return $fila;
+    } else {
+        return null;  // Devuelve null si no hay resultados
+    }
+}
+
+    
+    function ejecutarConsulta_retornarID($sql)
     {
         global $conexion;
-        $result = ejecutarConsulta($sql, $params);
-        if ($result) {
-            return $conexion->insert_id;
-        }
-        return false;
+        $query = $conexion->query($sql);
+        return $conexion->insert_id;
     }
 
-    /**
-     * Limpia una cadena para prevenir inyecciones SQL y ataques XSS.
-     *
-     * @param string $str La cadena a limpiar.
-     * @return string La cadena limpia.
-     */
     function limpiarCadena($str)
     {
         global $conexion;
@@ -108,25 +108,28 @@ if (!function_exists('ejecutarConsulta')) {
         return htmlspecialchars($str);
     }
 
-    /**
-     * Ejecuta una consulta SQL que devuelve múltiples filas como un array.
-     *
-     * @param string $sql La consulta SQL con placeholders (?).
-     * @param array $params Los parámetros para reemplazar los placeholders.
-     * @return mixed Un array de arrays asociativos con las filas o false en caso de error.
-     */
-    function ejecutarConsultaArray($sql, $params = [])
+    function ejecutarConsultaArray($sql)
     {
-        $result = ejecutarConsulta($sql, $params);
-        if ($result === false) {
+        global $conexion;
+        $query = $conexion->query($sql);
+        
+        // Verifica si la consulta fue exitosa
+        if (!$query) {
+            echo "Error en la consulta: " . $conexion->error;
             return false;
         }
         
+        // Crea un arreglo para almacenar los resultados
         $resultArray = array();
-        while ($row = $result->fetch_assoc()) {
+        
+        // Itera sobre cada fila del resultado y la agrega al arreglo
+        while ($row = $query->fetch_assoc()) {
             $resultArray[] = $row;
         }
+        
+        // Retorna el arreglo con todas las filas
         return $resultArray;
     }
+
 }
 ?>

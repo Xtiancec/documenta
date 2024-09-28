@@ -134,14 +134,14 @@
 
 <!-- Incluir custom.js después de jQuery.style.switcher.js -->
  <!-- Incluir custom.js después de jQuery.style.switcher.js -->
-<script src="../app/template/js/custom.js"></script>
+ <script src="../app/template/js/custom.min.js"></script>
 
 <!-- Incluir theme-switcher.js después de custom.js -->
  
 
 <script src="scripts/custom.js"></script>
 
-<script src="../app/template/js/theme-switcher.js"></script>
+¿
 
 </body>
 

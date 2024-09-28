@@ -61,13 +61,13 @@ if (
     <!-- End Preloader -->
 
     <!-- Main Wrapper -->
-    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/bgandina.jpeg);">
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/postulantes.png);">
         <div class="login-box card">
             <div class="card-body">
                 <!-- Formulario de Login -->
                 <form class="form-horizontal form-material" id="frmAccesoPostulante" method="post">
                     <a href="javascript:void(0)" class="text-center db">
-                    <img src="../app/template/images/andina.png" alt="Home" width="300" height="80" />
+                    <img src="../app/template/images/logo.png" alt="Home" width="300" height="80" />
                         
                     </a>
                     <br>
@@ -95,7 +95,7 @@ if (
                     <div id="login-error-message-postulante" class="text-danger text-center mb-3"></div>
                     <div class="form-group text-center m-t-20">
                         <div class="col-xs-12">
-                            <button class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Ingresar</button>
+                            <button class="btn btn-inverse btn-lg btn-block text-uppercase btn-rounded" type="submit">Ingresar</button>
                         </div>
                     </div>
                     <div class="row">

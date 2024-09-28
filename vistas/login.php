@@ -81,14 +81,14 @@ if (isset($_SESSION['user_type'])) {
     <!-- End Preloader -->
 
     <!-- Main Wrapper -->
-    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/trabajadores.jpeg);">
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/colaboradores.png);">
         <div class="login-box card">
             <div class="card-body">
                 <!-- Formulario de Login -->
                 <form class="form-horizontal form-material" id="frmAcceso" method="post">
                     <a href="javascript:void(0)" class="text-center db">
 
-                        <img src="../app/template/images/andina.png" alt="Home" width="300" height="80" />
+                        <img src="../app/template/images/logo.png" alt="Home" width="300" height="80" />
                     </a>
                     <br>
                     <h2 style="text-align: center; font-weight: bold;">Colaboradores</h2>
@@ -99,7 +99,8 @@ if (isset($_SESSION['user_type'])) {
                     </div>
                     <div class="form-group">
                         <div class="col-xs-12">
-                            <input class="form-control" id="clavea" name="clavea" type="password" required placeholder="Contraseña" autocomplete="current-password">
+                            <!-- Cambiado el ID a 'password' -->
+                            <input class="form-control" id="password" name="password" type="password" required placeholder="Contraseña" autocomplete="current-password">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -114,7 +115,7 @@ if (isset($_SESSION['user_type'])) {
                     <div id="login-error-message" class="text-danger text-center mb-3"></div>
                     <div class="form-group text-center m-t-20">
                         <div class="col-xs-12">
-                            <button class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Ingresar</button>
+                            <button class="btn btn-inverse btn-lg btn-block text-uppercase btn-rounded" type="submit">Ingresar</button>
                         </div>
                     </div>
                     <div class="row">
