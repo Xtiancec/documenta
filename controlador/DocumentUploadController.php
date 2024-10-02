@@ -85,48 +85,27 @@ class DocumentUploadController
             return;
         }
 
-        // Generar un nombre único para el archivo
-        $newFileName = uniqid('doc_', true) . '.' . $fileExtension;
+        // Preparar los datos para insertar en la base de datos
+        $data = [
+            'user_id' => $user_id,
+            'category_id' => $category_id,
+            'document_type' => $document_type,
+            'document_name' => $originalFileName,
+            'user_observation' => $user_observation,
+            'state_id' => $state_id,
+        ];
 
-        // Definir la ruta donde se guardará el archivo
-        $uploadDir = '../uploads/documents/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-        $destinationPath = $uploadDir . $newFileName;
+        $documentUpload = new DocumentUpload();
+        $result = $documentUpload->subirDocumento($data, $file);
 
-        // Mover el archivo a la ubicación final
-        if (move_uploaded_file($fileTmpPath, $destinationPath)) {
-            // Preparar los datos para insertar en la base de datos
-            $data = [
-                'user_id' => $user_id,
-                'category_id' => $category_id,
-                'document_type' => $document_type,
-                'document_name' => $originalFileName,
-                'document_path' => $destinationPath,
-                'user_observation' => $user_observation,
-                'state_id' => $state_id,
-            ];
-
-            $documentUpload = new DocumentUpload();
-            $result = $documentUpload->subirDocumento($data);
-
-            if ($result['success']) {
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Documento subido exitosamente.',
-                    'documentPath' => $destinationPath,
-                    'originalFileName' => $originalFileName
-                ]);
-            } else {
-                // Eliminar el archivo si hubo un error al insertar en la base de datos
-                if (file_exists($destinationPath)) {
-                    unlink($destinationPath);
-                }
-                echo json_encode(['success' => false, 'message' => 'Error al guardar el documento: ' . $result['error']]);
-            }
+        if ($result['success']) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Documento subido exitosamente.',
+                // Puedes agregar más información si lo deseas
+            ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Error al mover el archivo al directorio de destino.']);
+            echo json_encode(['success' => false, 'message' => 'Error al guardar el documento: ' . $result['error']]);
         }
     }
 

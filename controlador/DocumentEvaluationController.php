@@ -4,6 +4,8 @@
 require "../config/Conexion.php";
 require_once "../modelos/DocumentApplicant.php";
 require_once "../modelos/Experience.php";
+require_once "../modelos/Companies.php"; // Nuevo modelo para Empresas
+require_once "../modelos/Jobs.php"; // Nuevo modelo para Puestos
 
 class DocumentEvaluationController
 {
@@ -29,105 +31,141 @@ class DocumentEvaluationController
         }
     }
 
-    // Listar postulantes con porcentajes de documentos subidos y aprobados
+    // Listar postulantes con Server-Side Processing
     public function listarApplicants()
     {
         $this->verificarSuperadmin();
-    
-        // Obtener los filtros de fecha si existen
-        $start_date = isset($_GET['start_date']) && !empty($_GET['start_date']) ? $_GET['start_date'] : null;
-        $end_date = isset($_GET['end_date']) && !empty($_GET['end_date']) ? $_GET['end_date'] : null;
-    
+
+        // Parámetros de DataTables
+        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
+        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+        $searchValue = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
+
+        // Ordenamiento
+        $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+        $orderDir = isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc', 'desc']) ? $_POST['order'][0]['dir'] : 'asc';
+        $orderColumn = 'c.company_name'; // Predeterminado
+        $columns = [
+            0 => 'c.company_name',
+            1 => 'j.position_name',
+            2 => 'a.names',
+            3 => 'a.email'
+            // Añade más columnas según tu necesidad
+        ];
+        if (isset($columns[$orderColumnIndex])) {
+            $orderColumn = $columns[$orderColumnIndex];
+        }
+
+        // Obtener los filtros si existen
+        $start_date = isset($_POST['start_date']) && !empty($_POST['start_date']) ? $_POST['start_date'] : null;
+        $end_date = isset($_POST['end_date']) && !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+        $company_id = isset($_POST['company_id']) && !empty($_POST['company_id']) ? intval($_POST['company_id']) : null;
+        $job_id = isset($_POST['job_id']) && !empty($_POST['job_id']) ? intval($_POST['job_id']) : null;
+
         $documentApplicant = new DocumentApplicant();
-        $documents = $documentApplicant->listarTodos($start_date, $end_date);
-    
+        $totalRecords = $documentApplicant->contarTodos($start_date, $end_date, $searchValue, $company_id, $job_id);
+        $documents = $documentApplicant->listarTodosServerSide($start, $length, $orderColumn, $orderDir, $start_date, $end_date, $searchValue, $company_id, $job_id);
+
         if (!empty($documents)) {
-            // Agrupar documentos por postulante
-            $applicants = [];
-            foreach ($documents as $doc) {
-                $applicantId = $doc['applicant_id'];
-                if (!isset($applicants[$applicantId])) {
-                    $applicants[$applicantId] = [
-                        'company_name' => $doc['company_name'],
-                        'job_name' => $doc['job_name'],
-                        'id' => $applicantId,
-                        'names' => $doc['applicant_name'],
-                        'lastname' => $doc['lastname'],
-                        'username' => $doc['username'] ?? 'N/A',
-                        'email' => $doc['email'] ?? 'N/A',
-                        'photo' => $doc['photo'] ?? null, // Agregando la foto aquí
-                        'total_required_cv' => 1, // Solo 1 CV
-                        'total_uploaded_cv' => 0,
-                        'total_approved_cv' => 0,
-                        'total_required_other' => 10, // Máximo 10 Otros Documentos
-                        'total_uploaded_other' => 0,
-                        'total_approved_other' => 0
-                    ];
-                }
-    
-                // Determinar si el documento es CV o Otro Documento
-                if (stripos($doc['document_name'], 'cv') !== false) {
-                    $applicants[$applicantId]['total_uploaded_cv'] += 1;
-                    if ($doc['state_id'] == 2) { // Aprobado
-                        $applicants[$applicantId]['total_approved_cv'] += 1;
-                    }
-                } else {
-                    $applicants[$applicantId]['total_uploaded_other'] += 1;
-                    if ($doc['state_id'] == 2) { // Aprobado
-                        $applicants[$applicantId]['total_approved_other'] += 1;
-                    }
-                }
-            }
-    
-            // Calcular porcentajes
-            $applicantsList = [];
-            foreach ($applicants as $applicant) {
-                // Porcentaje de CV subidos
-                $porcentaje_subidos_cv = $applicant['total_required_cv'] > 0 ? round(min($applicant['total_uploaded_cv'] / $applicant['total_required_cv'], 1) * 100, 2) : 0;
-    
-                // Porcentaje de CV aprobados
-                $porcentaje_aprobados_cv = $applicant['total_required_cv'] > 0 ? round(min($applicant['total_approved_cv'] / $applicant['total_required_cv'], 1) * 100, 2) : 0;
-    
-                // Porcentaje de Otros Documentos subidos (hasta máximo 10)
-                $porcentaje_subidos_other = $applicant['total_required_other'] > 0 ? round(min($applicant['total_uploaded_other'] / $applicant['total_required_other'], 1) * 100, 2) : 0;
-    
-                // Porcentaje de Otros Documentos aprobados
-                $porcentaje_aprobados_other = $applicant['total_required_other'] > 0 ? round(min($applicant['total_approved_other'] / $applicant['total_required_other'], 1) * 100, 2) : 0;
-    
-                $applicantsList[] = [
-                    'company_name' => $applicant['company_name'],
-                    'job_name' => $applicant['job_name'],
-                    'id' => $applicant['id'],
-                    'names' => $applicant['names'],
-                    'lastname' => $applicant['lastname'],
-                    'username' => $applicant['username'],
-                    'email' => $applicant['email'],
-                    'photo' => $applicant['photo'], // Incluir la foto aquí en la lista final
-                    'porcentaje_subidos_cv' => $porcentaje_subidos_cv,
-                    'porcentaje_aprobados_cv' => $porcentaje_aprobados_cv,
-                    'porcentaje_subidos_other' => $porcentaje_subidos_other,
-                    'porcentaje_aprobados_other' => $porcentaje_aprobados_other
-                ];
-            }
-    
-            echo json_encode(['success' => true, 'applicants' => $applicantsList]);
+            echo json_encode([
+                'draw' => $draw,
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalRecords, // Puede ajustarse si se maneja correctamente la búsqueda
+                'data' => $documents
+            ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'No se encontraron postulantes.']);
+            echo json_encode([
+                'draw' => $draw,
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => []
+            ]);
         }
     }
-    
+
+    // Obtener lista de Empresas
+    public function obtenerEmpresas()
+    {
+        $this->verificarSuperadmin();
+
+        $company = new Companies();
+        $empresas = $company->listarEmpresas();
+
+        if (!empty($empresas)) {
+            echo json_encode([
+                'success' => true,
+                'empresas' => $empresas
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontraron empresas.']);
+        }
+    }
+
+    // Obtener lista de Puestos por Empresa
+    public function obtenerPuestosPorEmpresa()
+    {
+        $this->verificarSuperadmin();
+
+        $company_id = isset($_GET['company_id']) ? intval($_GET['company_id']) : 0;
+
+        if ($company_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'ID de empresa inválido.']);
+            exit();
+        }
+
+        $job = new Jobs();
+        $puestos = $job->listarPuestosPorEmpresa($company_id);
+
+        if (!empty($puestos)) {
+            echo json_encode([
+                'success' => true,
+                'puestos' => $puestos
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontraron puestos para esta empresa.']);
+        }
+    }
+
+    // Obtener nombre del postulante
+    public function obtenerNombreApplicant()
+    {
+        $this->verificarSuperadmin();
+
+        $applicant_id = isset($_GET['applicant_id']) ? intval($_GET['applicant_id']) : 0;
+
+        if ($applicant_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'ID de postulante inválido.']);
+            exit();
+        }
+
+        $documentApplicant = new DocumentApplicant();
+        $nombre = $documentApplicant->obtenerNombreApplicant($applicant_id);
+
+        if ($nombre) {
+            echo json_encode([
+                'success' => true,
+                'nombre' => $nombre
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Postulante no encontrado.']);
+        }
+    }
+
     // Obtener documentos subidos por un postulante
     public function documentosApplicant()
     {
         $this->verificarSuperadmin();
 
-        // Obtener los filtros de fecha si existen
         $applicant_id = isset($_POST['applicant_id']) ? intval($_POST['applicant_id']) : 0;
-        $start_date = isset($_POST['start_date']) && !empty($_POST['start_date']) ? $_POST['start_date'] : null;
-        $end_date = isset($_POST['end_date']) && !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+
+        if ($applicant_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'ID de postulante inválido.']);
+            exit();
+        }
 
         $documentApplicant = new DocumentApplicant();
-        $documents = $documentApplicant->obtenerDocumentosPorUsuario($applicant_id, $start_date, $end_date);
+        $documents = $documentApplicant->obtenerDocumentosPorUsuario($applicant_id);
 
         if (!empty($documents)) {
             // Separar los documentos en CV y Otros
@@ -226,6 +264,27 @@ class DocumentEvaluationController
             'trabajos' => $trabajos
         ]);
     }
+
+    // Servir imagen optimizada (opcional)
+    public function servirImagen()
+    {
+        $path = isset($_GET['path']) ? $_GET['path'] : '';
+        $imagePath = "../" . $path;
+        if (file_exists($imagePath)) {
+            $info = getimagesize($imagePath);
+            header("Content-Type: " . $info['mime']);
+            header("Cache-Control: public, max-age=86400"); // Caché por un día
+            readfile($imagePath);
+            exit;
+        } else {
+            // Imagen por defecto
+            readfile('/rh/app/template/images/default_photo.png');
+            exit;
+        }
+    }
+
+    // Listar todos los postulantes para DataTables (si es necesario)
+    // Puedes agregar más métodos según tus necesidades
 }
 
 // Manejo de las acciones
@@ -234,6 +293,12 @@ if (isset($_GET['op'])) {
     switch ($_GET['op']) {
         case 'listarApplicants':
             $controller->listarApplicants();
+            break;
+        case 'obtenerEmpresas':
+            $controller->obtenerEmpresas();
+            break;
+        case 'obtenerPuestosPorEmpresa':
+            $controller->obtenerPuestosPorEmpresa();
             break;
         case 'documentosApplicant':
             $controller->documentosApplicant();
@@ -246,6 +311,12 @@ if (isset($_GET['op'])) {
             break;
         case 'obtenerTrabajo':
             $controller->obtenerTrabajo();
+            break;
+        case 'obtenerNombreApplicant':
+            $controller->obtenerNombreApplicant();
+            break;
+        case 'servirImagen':
+            $controller->servirImagen();
             break;
         // Otros casos si los hay
         default:

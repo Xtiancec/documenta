@@ -19,7 +19,7 @@ if (
 $page_specific_scripts = '
 <!-- DataTables Initialization -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="scripts/dashboardAdminpr.js"></script>
+<script src="/rh2/vistas/scripts/scripts/dashboardAdminpr.js"></script>
 ';
 
 // Incluir los layouts
@@ -177,6 +177,8 @@ require 'layout/sidebar.php';
         <!-- Puedes añadir más gráficos o componentes aquí -->
     </div>
 </div>
+
+<script src="/documenta/vistas/scripts/dashboardAdminpr.js"></script>
 
 <?php
 // Incluir el footer, que ya contiene los scripts comunes y el espacio para scripts específicos

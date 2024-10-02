@@ -9,7 +9,7 @@ $(document).ready(function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: '../controlador/DocumentMandatoryController.php?op=listarPuestosConDocumentosPorEmpresaCompleto',
+                url: '/documenta/controlador/DocumentMandatoryController.php?op=listarPuestosConDocumentosPorEmpresaCompleto',
                 type: "GET",
                 dataType: "json",
                 error: function (e) {
@@ -41,7 +41,7 @@ $(document).ready(function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: '../controlador/DocumentMandatoryController.php?op=listarPuestosSinDocumentos',
+                url: '/documenta/controlador/DocumentMandatoryController.php?op=listarPuestosSinDocumentos',
                 type: "GET",
                 dataType: "json",
                 error: function (e) {

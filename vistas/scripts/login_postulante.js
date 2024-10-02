@@ -22,13 +22,13 @@ $(document).ready(function () {
         // $("#loginp-button").prop('disabled', true);
 
         $.ajax({
-            url: "../controlador/LoginPostulanteController.php?op=verificar",
+            url: "/documenta/controlador/LoginPostulanteController.php?op=verificar",
             method: "POST",
             data: { username: username, password: password },
             dataType: "json",
             success: function (data) {
                 if (data.success) {
-                    window.location.href = "applicant_details.php";
+                    window.location.href = "applicant_details";
                 } else {
                     Swal.fire({
                         icon: 'error',

@@ -9,7 +9,7 @@ if (
     $_SESSION['user_type'] === 'supplier' &&
     $_SESSION['user_role'] === 'proveedor'
 ) {
-    header("Location: supplier_dashboard.php");
+    header("Location: dashboardSupplier");
     exit();
 }
 ?>
@@ -17,36 +17,33 @@ if (
 <html lang="en">
 
 <head>
+    <!-- Metadatos -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Responsive a ancho de pantalla -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Login de Proveedores">
+    <meta name="description" content="Login de Usuarios">
     <meta name="author" content="Tu Nombre">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="../app/template/images/favicon.png">
-    <title>Login Proveedores - ANDINA</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/documenta/app/template/images/LOGO_FONDO_TRANSPARENTE.png">
+    <title>LOGIN PROVEEDORES - ANDINA</title>
     <!-- Bootstrap Core CSS -->
-    <link href="../app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/documenta/app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Page CSS -->
-    <link href="../app/template/css/pages/login-register-lock.css" rel="stylesheet">
+    <link href="/documenta/app/template/css/pages/login-register-lock.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../app/template/css/style.css" rel="stylesheet">
-    <!-- You can change the theme colors from here -->
-    <link href="../app/template/css/colors/default-dark.css" id="theme" rel="stylesheet">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- Custom JavaScript for Login -->
-    <script src="../app/template/plugins/jquery/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha512-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGaNfTT4b5gXq1Ua37gHmqZVJ9lOgqTFw/FtIpP9r0CjCBwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="../app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <!-- SweetAlert para mensajes elegantes -->
+    <link href="/documenta/app/template/css/style.css" rel="stylesheet">
+    <!-- Theme Colors -->
+    <link href="/documenta/app/template/css/colors/default-dark.css" id="theme" rel="stylesheet">
+    <!-- SweetAlert2 para mensajes elegantes -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery -->
+    <script src="/documenta/app/template/plugins/jquery/jquery.min.js"></script>
+    <!-- Popper.js y Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="/documenta/app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
     <!-- Tu script personalizado -->
-    <script src="scripts/login_supplier.js"></script>
+    <script src="/documenta/vistas/scripts/login_supplier.js"></script>
 </head>
 
 <body>
@@ -60,16 +57,16 @@ if (
     <!-- End Preloader -->
 
     <!-- Main Wrapper -->
-    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/proveedores.png);">
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(/documenta/app/template/images/proveedores.png);">
         <div class="login-box card">
             <div class="card-body">
                 <!-- Formulario de Login -->
                 <form class="form-horizontal form-material" id="frmAcceso" method="post">
                     <a href="javascript:void(0)" class="text-center db">
-                        <img src="../app/template/images/logo.png" alt="Home" width="300" height="80" />
+                        <img src="/documenta/app/template/images/logo.png" alt="Home" width="300" height="80" />
                     </a>
                     <br>
-                    <h2 style="text-align: center; font-weight: bold;">Proveedores</h2>
+                    <h2 style="text-align: center; font-weight: bold;">PROVEEDORES</h2>
 
                     <div class="form-group m-t-40">
                         <div class="col-xs-12">

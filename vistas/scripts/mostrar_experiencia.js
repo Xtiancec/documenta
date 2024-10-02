@@ -5,7 +5,7 @@ $(document).ready(function () {
     function cargarExperiencias() {
         // Cargar experiencia educativa
         $.ajax({
-            url: "../controlador/ExperienceController.php?op=mostrarEducacion",
+            url: "/documenta/controlador/ExperienceController.php?op=mostrarEducacion",
             type: "POST",
             success: function (response) {
                 console.log(response); // Verificar la respuesta en la consola
@@ -35,7 +35,7 @@ $(document).ready(function () {
         
         // Cargar experiencia laboral
         $.ajax({
-            url: "../controlador/ExperienceController.php?op=mostrarTrabajo",
+            url: "/documenta/controlador/ExperienceController.php?op=mostrarTrabajo",
             type: "POST",
             success: function (response) {
                 console.log(response); // Verificar la respuesta en la consola

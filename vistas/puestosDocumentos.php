@@ -94,7 +94,7 @@ require 'layout/sidebar.php';
     </div>
 </div>
 
-<script src="scripts/puestosDocumentos.js"></script>
+<script src="/documenta/vistas/scripts/puestosDocumentos.js"></script>
 
 <?php
 require 'layout/footer.php';

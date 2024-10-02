@@ -5,7 +5,7 @@ $(document).ready(function () {
     function cargarExperiencia() {
         // Cargar experiencia educativa
         $.ajax({
-            url: "../controlador/ExperienceController.php?op=mostrarEducacion",
+            url: "/documenta/controlador/ExperienceController.php?op=mostrarEducacion",
             type: "POST",
             success: function (response) {
                 let data = JSON.parse(response);
@@ -22,7 +22,7 @@ $(document).ready(function () {
 
         // Cargar experiencia laboral
         $.ajax({
-            url: "../controlador/ExperienceController.php?op=mostrarTrabajo",
+            url: "/documenta/controlador/ExperienceController.php?op=mostrarTrabajo",
             type: "POST",
             success: function (response) {
                 let data = JSON.parse(response);
@@ -75,7 +75,7 @@ $(document).ready(function () {
         e.preventDefault();
         let formData = $(this).serialize();
         $.ajax({
-            url: "../controlador/ExperienceController.php?op=guardarCambios",
+            url: "/documenta/controlador/ExperienceController.php?op=guardarCambios",
             type: "POST",
             data: formData,
             success: function (response) {
@@ -94,7 +94,7 @@ $(document).ready(function () {
         e.preventDefault();
         let formData = $(this).serialize();
         $.ajax({
-            url: "../controlador/ExperienceController.php?op=guardarCambios",
+            url: "/documenta/controlador/ExperienceController.php?op=guardarCambios",
             type: "POST",
             data: formData,
             success: function (response) {

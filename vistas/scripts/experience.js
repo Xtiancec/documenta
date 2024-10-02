@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para obtener experiencias educativas
     function obtenerEducacion() {
-        fetch('../controlador/ExperienceController.php?op=mostrarEducacion', {
+        fetch('/documenta/controlador/ExperienceController.php?op=mostrarEducacion', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para obtener experiencias laborales
     function obtenerTrabajo() {
-        fetch('../controlador/ExperienceController.php?op=mostrarTrabajo', {
+        fetch('/documenta/controlador/ExperienceController.php?op=mostrarTrabajo', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('formEducacion').addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        fetch('../controlador/ExperienceController.php?op=guardarEducacion', {
+        fetch('/documenta/controlador/ExperienceController.php?op=guardarEducacion', {
             method: 'POST',
             body: formData
         })
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('formTrabajo').addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        fetch('../controlador/ExperienceController.php?op=guardarTrabajo', {
+        fetch('/documenta/controlador/ExperienceController.php?op=guardarTrabajo', {
             method: 'POST',
             body: formData
         })
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`../controlador/ExperienceController.php?op=eliminarEducacion`, {
+                    fetch(`/documenta/controlador/ExperienceController.php?op=eliminarEducacion`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`../controlador/ExperienceController.php?op=eliminarTrabajo`, {
+                    fetch(`/documenta/controlador/ExperienceController.php?op=eliminarTrabajo`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'

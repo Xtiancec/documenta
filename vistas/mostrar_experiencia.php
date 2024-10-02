@@ -5,7 +5,7 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
-    header("Location: ../login.php");
+    header("Location: login");
     exit();
 }
 
@@ -55,7 +55,7 @@ require 'layout/sidebar.php';
                 <!-- Mostrar experiencia educativa -->
                 <h6 class="card-subtitle">Lista de experiencias educativas registradas</h6>
                 <div class="table-responsive">
-                    <table class="table color-bordered-table dark-bordered-table table-hover">
+                    <table class="table color-table inverse-table" style="width:100%">
                         <thead class="thead-light">
                             <tr>
                                 <th>Institución</th>
@@ -107,7 +107,7 @@ require 'layout/sidebar.php';
     </div>
 
 
-    <script src="scripts/mostrar_experiencia.js"></script>
+    <script src="/documenta/vistas/scripts/mostrar_experiencia.js"></script>
     <?php require 'layout/footer.php'; ?>
 
     <style>

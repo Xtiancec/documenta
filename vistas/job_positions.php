@@ -3,16 +3,20 @@
 session_start();
 
 // Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.html");
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+// Verificar si el usuario ha iniciado sesión y es un adminpr (Administrador de Proveedores) o superadmin
+if (
+    !isset($_SESSION['user_type']) ||
+    $_SESSION['user_type'] !== 'user' ||
+    !isset($_SESSION['user_role']) ||
+    !in_array($_SESSION['user_role'], ['superadmin', 'adminrh']) // Permitir 'superadmin' o 'adminpr'
+) {
+    header("Location: login"); // Asegúrate de que esta sea la URL correcta de login
     exit();
 }
 
-// Verificar el rol del usuario
-if ($_SESSION['role'] !== 'superadmin' && $_SESSION['role'] !== 'adminrh') {
-    echo "No tienes permiso para acceder a esta página.";
-    exit();
-}
 
 require 'layout/header.php';
 require 'layout/navbar.php';
@@ -159,4 +163,4 @@ require 'layout/sidebar.php';
 <?php
 require 'layout/footer.php';
 ?>
-<script src="scripts/job_positions.js"></script>
+<script src="/documenta/vistas/scripts/job_positions.js"></script>

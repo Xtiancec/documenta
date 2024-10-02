@@ -57,7 +57,7 @@ class DocumentSupplierController
         $newFileName = uniqid('doc_', true) . '.' . $fileExtension;
 
         // Definir la ruta donde se guardará el archivo
-        $uploadDir = '../uploads/documents/';
+        $uploadDir = '../uploads/supplier/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }

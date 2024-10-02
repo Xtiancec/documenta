@@ -61,7 +61,7 @@ require 'layout/sidebar.php';
     </div>
 </div>
 
-<script src="scripts/adminDocumentReview.js"></script>
+<script src="/documenta/vistas/scripts/adminDocumentReview.js"></script>
 
 <?php
 require 'layout/footer.php';

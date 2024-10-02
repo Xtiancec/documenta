@@ -1,6 +1,18 @@
 <?php
 // superadmin_dashboard.php
-
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+// Verificar si el usuario ha iniciado sesión y es un adminpr (Administrador de Proveedores) o superadmin
+if (
+    !isset($_SESSION['user_type']) ||
+    $_SESSION['user_type'] !== 'user' ||
+    !isset($_SESSION['user_role']) ||
+    !in_array($_SESSION['user_role'], ['superadmin', 'adminpr']) // Permitir 'superadmin' o 'adminpr'
+) {
+    header("Location: ../login.php"); // Asegúrate de que esta sea la URL correcta de login
+    exit();
+}
 require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
@@ -13,7 +25,7 @@ require 'layout/sidebar.php';
     </div>
     <div class="col-md-6 text-right">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="index">Inicio</a></li>
             <li class="breadcrumb-item">Configuración</li>
             <li class="breadcrumb-item active">Asignación de Documentos</li>
         </ol>
@@ -35,7 +47,7 @@ require 'layout/sidebar.php';
                     <!-- Selección de Empresa -->
                     <div class="form-group">
                         <label for="company_id" class="font-weight-bold">Seleccione la Empresa</label>
-                        <select id="company_id" class="form-control select2" data-placeholder="Seleccione una empresa" style="width: 100%;">
+                        <select id="company_id" class="form-control select2" data-placeholder="Seleccione una empresa" >
                             <!-- Opciones cargadas dinámicamente -->
                         </select>
                     </div>
@@ -43,7 +55,7 @@ require 'layout/sidebar.php';
                     <!-- Selección de Puesto -->
                     <div class="form-group">
                         <label for="position_id" class="font-weight-bold">Seleccione el Puesto</label>
-                        <select id="position_id" class="form-control select2" data-placeholder="Seleccione un puesto" style="width: 100%;">
+                        <select id="position_id" class="form-control select2" data-placeholder="Seleccione un puesto" >
                             <!-- Opciones cargadas dinámicamente -->
                         </select>
                     </div>
@@ -193,7 +205,7 @@ require 'layout/sidebar.php';
 </style>
 
 <!-- Script para la Interacción de Documentos -->
-<script src="scripts/documentMandatory.js"></script>
+<script src="/documenta/vistas/scripts/documentMandatory.js"></script>
 
 <?php
 require 'layout/footer.php';

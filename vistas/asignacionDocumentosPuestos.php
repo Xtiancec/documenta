@@ -4,7 +4,7 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.html");
+    header("Location: login");
     exit();
 }
 
@@ -41,7 +41,7 @@ require 'layout/sidebar.php';
     <h6 class="card-subtitle">Documentos Obligatorios y Opcionales por Puesto</h6>
 
     <div class="table-responsive">
-        <table id="tblPuestosDocumentos" class="table table-striped table-bordered">
+        <table id="tblPuestosDocumentos" class="table color-table inverse-table" style="width:100%">
             <thead>
                 <tr>
                     <th>Puesto</th>
@@ -58,7 +58,7 @@ require 'layout/sidebar.php';
     </div>
 </div>
 
-<script src="scripts/listarPuestosDocumentos.js"></script>
+<script src="/documenta/vistas/scripts/listarPuestosDocumentos.js"></script>
 
 <?php
 require 'layout/footer.php';

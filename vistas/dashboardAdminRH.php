@@ -19,7 +19,7 @@ $page_specific_scripts = '
 <!-- Incluir Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Tu script personalizado -->
-<script src="scripts/dashboardAdminrh.js"></script>
+
 ';
 
 // Incluir los layouts
@@ -233,7 +233,7 @@ require 'layout/sidebar.php';
         </div>
     </div>
 </div>
-
+<script src="/documenta/vistas/scripts/dashboardAdminrh.js"></script>
 <!-- Contenedor para almacenar dataHash -->
 <div id="adminhrDashboardData" data-data-hash=""></div>
 

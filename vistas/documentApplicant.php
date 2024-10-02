@@ -101,7 +101,7 @@ require 'layout/sidebar.php';
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="tableDocuments" class="table color-table inverse-table table-bordered table-hover">
+                        <table id="tableDocuments" class="table color-table inverse-table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th><i class="fa fa-file"></i> Nombre Original</th>
@@ -233,4 +233,4 @@ require 'layout/footer.php';
 </style>
 
 <!-- JavaScript para la Subida de Documentos -->
-<script src="scripts/documentApplicant.js"></script>
+<script src="/documenta/vistas/scripts/documentApplicant.js"></script>

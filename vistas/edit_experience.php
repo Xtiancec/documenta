@@ -34,7 +34,7 @@ require 'layout/sidebar.php';
             <div class="card-body">
                 <form class="form-material m-t-40" id="formEducation" method="POST">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover" id="tablaExperienciaEducativa">
+                        <table class="table color-table inverse-table" style="width:100%" id="tablaExperienciaEducativa">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Institución</th>
@@ -86,7 +86,7 @@ require 'layout/sidebar.php';
     </div>
 </div>
 
-<script src="scripts/edit_experience.js"></script>
+<script src="/documenta/vistas/scripts/edit_experience.js"></script>
 
 <?php require 'layout/footer.php'; ?>
 

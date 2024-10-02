@@ -5,7 +5,7 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'user' || $_SESSION['user_role'] !== 'superadmin') {
-    header("Location: ../login.php");
+    header("Location: login");
     exit();
 }
 
@@ -70,7 +70,7 @@ require 'layout/sidebar.php';
                 <div class="mt-5">
                     <h4 class="text-info mb-4 font-weight-bold"><i class="fa fa-list"></i> Documentos Registrados</h4>
                     <div class="table-responsive">
-                        <table id="documentTable" class="table table-bordered table-striped">
+                        <table id="documentTable" class="table color-table inverse-table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -138,7 +138,7 @@ require 'layout/sidebar.php';
 </div>
 
 
-<script src="scripts/documentNameSupplier.js"></script>
+<script src="/documenta/vistas/scripts/documentNameSupplier.js"></script>
 
 <?php
 require 'layout/footer.php';

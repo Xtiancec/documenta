@@ -51,4 +51,4 @@ require 'layout/footer.php';
 ?>
 
 <!-- Incluye tu archivo JavaScript -->
-<script src="scripts/documentSupplier.js"></script>
+<script src="/documenta/vistas/scripts/documentSupplier.js"></script>

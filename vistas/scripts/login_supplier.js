@@ -13,14 +13,14 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "../controlador/LoginSupplierController.php?op=verificar",
+            url: "/documenta/controlador/LoginSupplierController.php?op=verificar",
             method: "POST",
             data: { username: username, password: password },
             dataType: "json",
             success: function (data) {
                 if (data.success) {
                     // Redirigir al dashboard del proveedor
-                    window.location.href = "dashboardSupplier.php"; // Asegúrate de que esta es la URL correcta
+                    window.location.href = "dashboardSupplier"; // Asegúrate de que esta es la URL correcta
                 } else {
                     // Mostrar mensaje de error usando SweetAlert
                     Swal.fire({

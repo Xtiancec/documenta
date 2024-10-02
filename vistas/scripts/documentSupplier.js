@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     function cargarDocumentosDisponibles() {
         $.ajax({
-            url: '../controlador/DocumentSupplierController.php?op=listarDocumentos',
+            url: '/documenta/controlador/DocumentSupplierController.php?op=listarDocumentos',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -30,7 +30,7 @@ $(document).ready(function () {
 
     function obtenerEstadoDocumentos(documentos) {
         $.ajax({
-            url: '../controlador/DocumentSupplierController.php?op=obtenerEstadoDocumentos',
+            url: '/documenta/controlador/DocumentSupplierController.php?op=obtenerEstadoDocumentos',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -153,7 +153,7 @@ $(document).ready(function () {
         formData.append('documentNameSupplier_id', documentId);
     
         $.ajax({
-            url: '../controlador/DocumentSupplierController.php?op=subir',
+            url: '/documenta/controlador/DocumentSupplierController.php?op=subir',
             method: 'POST',
             data: formData,
             processData: false,

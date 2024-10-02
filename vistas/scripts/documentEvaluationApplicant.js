@@ -1,32 +1,23 @@
 // admin/scripts/documentEvaluationApplicant.js
 
 $(document).ready(function () {
-    // Inicializar DataTable
+    // Cargar Empresas al iniciar la página
+    cargarEmpresas();
+
+    // Inicializar el DataTable con Server-Side Processing y filtros personalizados
     var tabla = $('#applicantsTable').DataTable({
+        serverSide: true,
+        processing: true,
         ajax: {
-            url: '../controlador/DocumentEvaluationController.php?op=listarApplicants',
-            type: "GET",
+            url: '/documenta/controlador/DocumentEvaluationController.php?op=listarApplicants',
+            type: "POST",
             dataType: "json",
-            dataSrc: function (json) {
-                if (json.success) {
-                    return json.applicants;
-                } else {
-                    Toastify({
-                        text: json.message || "Error al cargar los postulantes.",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "#dc3545",
-                        stopOnFocus: true,
-                    }).showToast();
-                    return [];
-                }
-            },
             data: function (d) {
-                // Obtener los valores de los filtros
+                // Añadir filtros personalizados
                 d.start_date = $('#startDate').val();
                 d.end_date = $('#endDate').val();
+                d.company_id = $('#companySelect').val();
+                d.job_id = $('#positionSelect').val();
             },
             error: function (e) {
                 console.error("Error al cargar los datos: ", e.responseText);
@@ -45,20 +36,19 @@ $(document).ready(function () {
             { "data": "company_name" },
             { "data": "job_name" },
             {
-                "data": null,
+                "data": "photo",
                 "render": function (data) {
-                    let photoUrl = data.photo && data.photo !== 'NULL'
-                        ? data.photo
-                        : '/rh/app/template/images/default_photo.png';
-                    return `<img src="${photoUrl}" alt="Foto del Postulante" class="img-thumbnail photo-clickable" style="width: 50px; height: 50px; cursor: pointer;">`;
+                    let photoUrl = data && data !== 'NULL'
+                        ? data
+                        : '/documenta/app/template/images/default_user.jpg'; // Ruta de la imagen por defecto
+                    return `<img src="${photoUrl}" alt="Foto del Postulante" class="img-thumbnail photo-clickable" style="width: 50px; height: 50px; cursor: pointer;" loading="lazy">`;
                 },
                 "orderable": false
-            }
-            ,
+            },
             {
                 "data": null,
                 "render": function (data) {
-                    return `${data.username} (${data.names} ${data.lastname})`;
+                    return `${data.names} ${data.lastname}`;
                 }
             },
             { "data": "email" },
@@ -86,7 +76,7 @@ $(document).ready(function () {
             {
                 "data": "porcentaje_aprobados_other",
                 "render": function (data) {
-                    return crearBarraProgreso(data, 'bg-primary');
+                    return crearBarraProgreso(data, 'bg-secondary');
                 },
                 "orderable": false
             },
@@ -94,68 +84,143 @@ $(document).ready(function () {
                 "data": null,
                 "render": function (data, type, row) {
                     return `
-                        <button class="btn btn-primary btn-sm btn-ver-detalles" data-id="${row.id}" data-nombre="${row.names} ${row.lastname}" title="Ver Detalles">
-                            <i class="fas fa-eye"></i> Ver Detalles
+                        <button class="btn btn-info btn-sm ver-detalles" data-id="${row.id}" title="Ver Detalles">
+                            <i class="fas fa-eye"></i>
                         </button>
                     `;
                 },
                 "orderable": false
             }
         ],
+        order: [[0, "asc"]],
         language: {
-            // Opciones de idioma (personalizar según sea necesario)
-            "sProcessing": "Procesando...",
-            "sLengthMenu": "Mostrar _MENU_ registros",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-            "sSearch": "Buscar:",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
-            },
+            // Opciones de idioma para DataTables
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
         },
         responsive: true,
-        destroy: true,
-        order: [[0, "asc"]]
+        deferRender: true,
+        pageLength: 10,
+        lengthMenu: [10, 25, 50, 100],
     });
-    $(document).on('click', '.photo-clickable', function () {
-        var imageUrl = $(this).attr('src');
-        $('#modalImage').attr('src', imageUrl);
-        $('#imageModal').modal('show');
+
+    // Evento cuando se cambia la Empresa
+    $('#companySelect').on('change', function () {
+        var companyId = $(this).val();
+        if (companyId) {
+            cargarPuestos(companyId);
+            $('#positionSelect').prop('disabled', false);
+        } else {
+            $('#positionSelect').html('<option value="">Todos los Puestos</option>');
+            $('#positionSelect').prop('disabled', true);
+        }
     });
-    // Manejar el envío del formulario de filtros
+
+    // Evento de envío del formulario de filtros
     $('#filtroForm').on('submit', function (e) {
         e.preventDefault();
         tabla.ajax.reload();
     });
 
-    // Manejar el reset del filtro
+    // Evento del botón de resetear filtros
     $('#resetFilter').on('click', function () {
         $('#filtroForm')[0].reset();
+        $('#positionSelect').html('<option value="">Todos los Puestos</option>');
+        $('#positionSelect').prop('disabled', true);
         tabla.ajax.reload();
     });
 
-    // Maximizar imagen al hacer clic
-    $(document).on('click', '.photo-clickable', function () {
-        var imageUrl = $(this).attr('src');
-        $('#modalImage').attr('src', imageUrl);
-        $('#imageModal').modal('show');
-    });
-
-    // Al hacer clic en "Ver Detalles"
-    $(document).on('click', '.btn-ver-detalles', function () {
-        var applicantId = $(this).data('id');
-        var applicantName = $(this).data('nombre');
-        $('#applicantNombre').text(applicantName);
-        cargarDetallesApplicant(applicantId);
-        $('#modalDetallesApplicant').modal('show');
+    // Evento para ver detalles en el DataTable
+    $('#applicantsTable tbody').on('click', '.ver-detalles', function () {
+        var data = tabla.row($(this).parents('tr')).data();
+        cargarDetallesApplicant(data.id);
     });
 });
+
+/**
+ * Función para cargar las empresas en el select de Empresa
+ */
+function cargarEmpresas() {
+    $.ajax({
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=obtenerEmpresas',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                var options = '<option value="">Todas las Empresas</option>';
+                data.empresas.forEach(function (empresa) {
+                    options += `<option value="${empresa.id}">${empresa.company_name}</option>`;
+                });
+                $('#companySelect').html(options);
+            } else {
+                console.error(data.message);
+                Toastify({
+                    text: "Error al cargar las empresas.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc3545",
+                }).showToast();
+            }
+        },
+        error: function (e) {
+            console.error("Error al cargar las empresas: ", e.responseText);
+            Toastify({
+                text: "Error al comunicarse con el servidor.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc3545",
+            }).showToast();
+        }
+    });
+}
+
+/**
+ * Función para cargar los puestos en el select de Puesto basado en la empresa seleccionada
+ * @param {number} companyId - ID de la empresa seleccionada
+ */
+function cargarPuestos(companyId) {
+    $.ajax({
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=obtenerPuestosPorEmpresa',
+        method: 'GET',
+        data: { company_id: companyId },
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                var options = '<option value="">Todos los Puestos</option>';
+                data.puestos.forEach(function (puesto) {
+                    options += `<option value="${puesto.id}">${puesto.position_name}</option>`;
+                });
+                $('#positionSelect').html(options);
+            } else {
+                console.error(data.message);
+                $('#positionSelect').html('<option value="">Todos los Puestos</option>');
+                Toastify({
+                    text: "Error al cargar los puestos.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc3545",
+                }).showToast();
+            }
+        },
+        error: function (e) {
+            console.error("Error al cargar los puestos: ", e.responseText);
+            $('#positionSelect').html('<option value="">Todos los Puestos</option>');
+            Toastify({
+                text: "Error al comunicarse con el servidor.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc3545",
+            }).showToast();
+        }
+    });
+}
 
 /**
  * Función para crear una barra de progreso
@@ -176,6 +241,15 @@ function crearBarraProgreso(valor, clase) {
 }
 
 /**
+ * Función para mostrar una imagen en el modal
+ * @param {string} src - Ruta de la imagen
+ */
+function mostrarImagenModal(src) {
+    $('#modalImage').attr('src', src);
+    $('#imageModal').modal('show');
+}
+
+/**
  * Función para cargar los detalles del postulante en el modal
  * @param {number} applicantId - ID del postulante
  */
@@ -184,6 +258,26 @@ function cargarDetallesApplicant(applicantId) {
     $('#documentosApplicantContainer').html('<p>Cargando documentos...</p>');
     $('#educacionApplicantContainer').html('<p>Cargando experiencia educativa...</p>');
     $('#trabajoApplicantContainer').html('<p>Cargando experiencia laboral...</p>');
+    $('#applicantNombre').text('');
+
+    // Obtener el nombre del postulante
+    $.ajax({
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=obtenerNombreApplicant',
+        method: 'GET',
+        data: { applicant_id: applicantId },
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                $('#applicantNombre').text(data.nombre);
+            } else {
+                $('#applicantNombre').text('Desconocido');
+            }
+        },
+        error: function (e) {
+            console.error("Error al obtener el nombre del postulante: ", e.responseText);
+            $('#applicantNombre').text('Desconocido');
+        }
+    });
 
     // Cargar Documentos
     cargarDocumentosApplicant(applicantId);
@@ -196,12 +290,12 @@ function cargarDetallesApplicant(applicantId) {
 }
 
 /**
- * Cargar los documentos subidos por el postulante
+ * Función para cargar los documentos subidos por el postulante
  * @param {number} applicantId - ID del postulante
  */
 function cargarDocumentosApplicant(applicantId) {
     $.ajax({
-        url: '../controlador/DocumentEvaluationController.php?op=documentosApplicant',
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=documentosApplicant',
         method: 'POST',
         data: { applicant_id: applicantId },
         dataType: 'json',
@@ -292,12 +386,12 @@ function generarItemDocumento(doc, applicantId) {
 }
 
 /**
- * Cargar la experiencia educativa del postulante
+ * Función para cargar la experiencia educativa del postulante
  * @param {number} applicantId - ID del postulante
  */
 function cargarEducacionApplicant(applicantId) {
     $.ajax({
-        url: '../controlador/DocumentEvaluationController.php?op=obtenerEducacion',
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=obtenerEducacion',
         method: 'GET',
         data: { applicant_id: applicantId },
         dataType: 'json',
@@ -334,7 +428,7 @@ function renderizarEducacionApplicant(educaciones, containerSelector) {
                     <strong>${edu.institution}</strong> - ${edu.education_type}<br>
                     <small>${formatDate(edu.start_date)} - ${formatDate(edu.end_date)}</small><br>
                     <small>Duración: ${edu.duration} ${edu.duration_unit}</small><br>
-                    ${edu.file_path ? `<a href="../${edu.file_path}" target="_blank" class="text-primary">Ver Archivo</a>` : 'Sin Archivo'}
+                    ${edu.file_path ? `<a href="${edu.file_path}" target="_blank" class="text-primary">Ver Archivo</a>` : 'Sin Archivo'}
                 </li>
             `;
         });
@@ -345,12 +439,12 @@ function renderizarEducacionApplicant(educaciones, containerSelector) {
 }
 
 /**
- * Cargar la experiencia laboral del postulante
+ * Función para cargar la experiencia laboral del postulante
  * @param {number} applicantId - ID del postulante
  */
 function cargarTrabajoApplicant(applicantId) {
     $.ajax({
-        url: '../controlador/DocumentEvaluationController.php?op=obtenerTrabajo',
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=obtenerTrabajo',
         method: 'GET',
         data: { applicant_id: applicantId },
         dataType: 'json',
@@ -386,7 +480,7 @@ function renderizarTrabajoApplicant(trabajos, containerSelector) {
                 <li class="list-group-item">
                     <strong>${trab.company}</strong> - ${trab.position}<br>
                     <small>${formatDate(trab.start_date)} - ${formatDate(trab.end_date)}</small><br>
-                    ${trab.file_path ? `<a href="../${trab.file_path}" target="_blank" class="text-primary">Ver Archivo</a>` : 'Sin Archivo'}
+                    ${trab.file_path ? `<a href="${trab.file_path}" target="_blank" class="text-primary">Ver Archivo</a>` : 'Sin Archivo'}
                 </li>
             `;
         });
@@ -404,11 +498,26 @@ function renderizarTrabajoApplicant(trabajos, containerSelector) {
 function formatDate(dateStr) {
     if (!dateStr) return 'Presente';
     var date = new Date(dateStr);
+    if (isNaN(date.getTime())) return 'Desconocido';
     var day = ("0" + date.getDate()).slice(-2);
     var month = ("0" + (date.getMonth() + 1)).slice(-2);
     var year = date.getFullYear();
     return `${day}/${month}/${year}`;
 }
+
+// Maximizar imagen al hacer clic
+$(document).on('click', '.photo-clickable', function () {
+    var imageUrl = $(this).attr('src');
+    $('#modalImage').attr('src', imageUrl);
+    $('#imageModal').modal('show');
+});
+
+// Al hacer clic en "Ver Detalles"
+$(document).on('click', '.ver-detalles', function () {
+    var applicantId = $(this).data('id');
+    cargarDetallesApplicant(applicantId);
+    $('#modalDetallesApplicant').modal('show');
+});
 
 // Eventos para cambiar estado de documentos
 $(document).on('click', '.btn-aprobar, .btn-solicitar-correccion, .btn-rechazar', function () {
@@ -464,7 +573,7 @@ $(document).on('click', '.btn-aprobar, .btn-solicitar-correccion, .btn-rechazar'
  */
 function cambiarEstadoDocumento(documentId, estadoId, applicantId, observacion) {
     $.ajax({
-        url: '../controlador/DocumentEvaluationController.php?op=cambiarEstadoDocumento',
+        url: '/documenta/controlador/DocumentEvaluationController.php?op=cambiarEstadoDocumento',
         method: 'POST',
         data: {
             document_id: documentId,

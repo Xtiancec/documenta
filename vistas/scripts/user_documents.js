@@ -1,37 +1,38 @@
-// scripts/user_documents.js
+// vistas/scripts/user_documents.js
 
 $(document).ready(function () {
-    listarUsuarios();
+    // Cargar Empresas al iniciar la página
+    cargarEmpresas();
 
-    // Manejar el envío del formulario de filtros
-    $('#filtroForm').on('submit', function (e) {
-        e.preventDefault();
-        listarUsuarios();
-    });
-
-    // Manejar el reset del filtro
-    $('#resetFilter').on('click', function () {
-        $('#startDate').val('');
-        $('#endDate').val('');
-        listarUsuarios();
-    });
-});
-
-function listarUsuarios() {
-    // Obtener los valores de los filtros
-    var startDate = $('#startDate').val();
-    var endDate = $('#endDate').val();
-
+    // Inicializar DataTable
     var tabla = $('#usuariosTable').DataTable({
         ajax: {
-            url: '../controlador/UserDocumentsController.php?op=listarUsuarios',
+            url: '/documenta/controlador/UserDocumentsController.php?op=listarUsuarios',
             type: "GET",
             dataType: "json",
-            dataSrc: 'usuarios',
+            dataSrc: function (json) {
+                if (json.success) {
+                    return json.usuarios;
+                } else {
+                    console.error(json.message);
+                    Toastify({
+                        text: json.message,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#dc3545",
+                        stopOnFocus: true,
+                    }).showToast();
+                    return [];
+                }
+            },
             data: function (d) {
-                // Añadir los filtros al objeto de datos
-                d.start_date = startDate;
-                d.end_date = endDate;
+                // Obtener los valores de los filtros
+                d.start_date = $('#startDate').val();
+                d.end_date = $('#endDate').val();
+                d.company_id = $('#companySelect').val();
+                d.job_id = $('#positionSelect').val();
             },
             error: function (e) {
                 console.error("Error al cargar los datos: ", e.responseText);
@@ -47,44 +48,53 @@ function listarUsuarios() {
             }
         },
         columns: [
-            { 
-                "data": null, 
-                "render": function(data) {
-                    return `${data.names} ${data.lastname} (${data.username})`;
-                }
-            },
-            { "data": "email" },
-            { 
-                "data": "porcentaje_subidos_mandatory",
-                "render": function(data) {
-                    return crearBarraProgreso(data, 'bg-info');
-                },
-                "orderable": false
-            },
-            { 
-                "data": "porcentaje_subidos_optional",
-                "render": function(data) {
-                    return crearBarraProgreso(data, 'bg-info');
-                },
-                "orderable": false
-            },
-            { 
-                "data": "porcentaje_aprobados_mandatory",
-                "render": function(data) {
-                    return crearBarraProgreso(data, 'bg-success');
-                },
-                "orderable": false
-            },
-            { 
-                "data": "porcentaje_aprobados_optional",
-                "render": function(data) {
-                    return crearBarraProgreso(data, 'bg-success');
-                },
-                "orderable": false
-            },
-            { 
+            { "data": "company_name" },
+            { "data": "position_name" },
+            { "data": "names" },
+            { "data": "lastname" },
+            {
                 "data": null,
-                "render": function(data) {
+                "render": function (data) {
+                    let photoUrl = data.photo && data.photo !== 'NULL'
+                        ? data.photo
+                        : '/documenta/app/template/images/default_user.jpg'; // Ruta de la imagen por defecto
+                    return `<img src="${photoUrl}" alt="Foto del Usuario" class="img-thumbnail photo-clickable" style="width: 50px; height: 50px; cursor: pointer;" loading="lazy">`;
+                },
+                "orderable": false
+            },
+            
+            
+            {
+                "data": "porcentaje_subidos_mandatory",
+                "render": function (data) {
+                    return crearBarraProgreso(data, 'bg-info');
+                },
+                "orderable": false
+            },
+            {
+                "data": "porcentaje_subidos_optional",
+                "render": function (data) {
+                    return crearBarraProgreso(data, 'bg-info');
+                },
+                "orderable": false
+            },
+            {
+                "data": "porcentaje_aprobados_mandatory",
+                "render": function (data) {
+                    return crearBarraProgreso(data, 'bg-success');
+                },
+                "orderable": false
+            },
+            {
+                "data": "porcentaje_aprobados_optional",
+                "render": function (data) {
+                    return crearBarraProgreso(data, 'bg-success');
+                },
+                "orderable": false
+            },
+            {
+                "data": null,
+                "render": function (data) {
                     return `
                         <button class="btn btn-primary btn-sm btn-ver-documentos" data-id="${data.id}" data-nombre="${data.names} ${data.lastname}">
                             <i class="fa fa-eye"></i> Ver Documentos
@@ -95,32 +105,123 @@ function listarUsuarios() {
         ],
         language: {
             // Opciones de idioma (personalizar según sea necesario)
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar _MENU_ registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ningún dato disponible en esta tabla",
-            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix":    "",
-            "sSearch":         "Buscar:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst":    "Primero",
-                "sLast":     "Último",
-                "sNext":     "Siguiente",
-                "sPrevious": "Anterior"
-            },
-            "oAria": {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+
+        },
+        responsive: true, // Asegúrate de que esta opción esté habilitada
+        deferRender: true,
+        pageLength: 10,
+        lengthMenu: [10, 25, 50, 100],
+        order: [[1, "asc"]] // Ordenar por nombre
+    });
+
+    // Manejar el envío del formulario de filtros
+    $('#filtroForm').on('submit', function (e) {
+        e.preventDefault();
+        tabla.ajax.reload();
+    });
+
+    // Manejar el reset del filtro
+    $('#resetFilter').on('click', function () {
+        $('#startDate').val('');
+        $('#endDate').val('');
+        $('#companySelect').val('');
+        $('#positionSelect').html('<option value="">Todos los Puestos</option>').prop('disabled', true);
+        tabla.ajax.reload();
+    });
+
+    // Evento cuando se cambia la Empresa
+    $('#companySelect').on('change', function () {
+        var companyId = $(this).val();
+        if (companyId) {
+            cargarPuestos(companyId);
+            $('#positionSelect').prop('disabled', false);
+        } else {
+            $('#positionSelect').html('<option value="">Todos los Puestos</option>').prop('disabled', true);
+        }
+    });
+});
+
+function listarUsuarios() {
+    // Ya no es necesario, ya inicializamos la DataTable una vez
+}
+
+function cargarEmpresas() {
+    $.ajax({
+        url: '/documenta/controlador/UserDocumentsController.php?op=obtenerEmpresas', // Actualizado
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                var options = '<option value="">Todas las Empresas</option>';
+                data.empresas.forEach(function (empresa) {
+                    options += `<option value="${empresa.id}">${empresa.company_name}</option>`;
+                });
+                $('#companySelect').html(options);
+            } else {
+                console.error(data.message);
+                Toastify({
+                    text: "Error al cargar las empresas.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc3545",
+                }).showToast();
             }
         },
-        responsive: true,
-        destroy: true,
-        order: [[0, "asc"]]
+        error: function (e) {
+            console.error("Error al cargar las empresas: ", e.responseText);
+            Toastify({
+                text: "Error al comunicarse con el servidor.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc3545",
+            }).showToast();
+        }
+    });
+}
+
+function cargarPuestos(companyId) {
+    $.ajax({
+        url: '/documenta/controlador/UserDocumentsController.php?op=obtenerPuestosPorEmpresa', // Actualizado
+        method: 'GET',
+        data: { company_id: companyId },
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                var options = '<option value="">Todos los Puestos</option>';
+                data.puestos.forEach(function (puesto) {
+                    options += `<option value="${puesto.id}">${puesto.position_name}</option>`;
+                });
+                $('#positionSelect').html(options);
+            } else {
+                console.error(data.message);
+                $('#positionSelect').html('<option value="">Todos los Puestos</option>');
+                Toastify({
+                    text: "Error al cargar los puestos.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc3545",
+                }).showToast();
+            }
+        },
+        error: function (e) {
+            console.error("Error al cargar los puestos: ", e.responseText);
+            $('#positionSelect').html('<option value="">Todos los Puestos</option>');
+            Toastify({
+                text: "Error al comunicarse con el servidor.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc3545",
+            }).showToast();
+        }
     });
 }
 
@@ -130,6 +231,13 @@ function crearBarraProgreso(valor, clase) {
             <div class="progress-bar ${clase}" role="progressbar" style="width: ${valor}%" aria-valuenow="${valor}" aria-valuemin="0" aria-valuemax="100">${valor}%</div>
         </div>`;
 }
+
+// Maximizar imagen al hacer clic
+$(document).on('click', '.photo-clickable', function () {
+    var imageUrl = $(this).attr('src');
+    $('#modalImage').attr('src', imageUrl);
+    $('#imageModal').modal('show');
+});
 
 // Al hacer clic en "Ver Documentos"
 $(document).on('click', '.btn-ver-documentos', function () {
@@ -147,9 +255,9 @@ function cargarDocumentosUsuario(userId) {
     var endDate = $('#endDate').val();
 
     $.ajax({
-        url: '../controlador/UserDocumentsController.php?op=documentosUsuario',
+        url: '/documenta/controlador/UserDocumentsController.php?op=documentosUsuario',
         method: 'POST',
-        data: { 
+        data: {
             user_id: userId,
             start_date: startDate,
             end_date: endDate
@@ -266,7 +374,7 @@ $(document).on('click', '.btn-aprobar, .btn-solicitar-correccion, .btn-rechazar'
 // Función para cambiar el estado del documento
 function cambiarEstadoDocumento(documentId, estadoId, userId, observacion) {
     $.ajax({
-        url: '../controlador/UserDocumentsController.php?op=cambiarEstadoDocumento',
+        url: '/documenta/controlador/UserDocumentsController.php?op=cambiarEstadoDocumento',
         method: 'POST',
         data: {
             document_id: documentId,

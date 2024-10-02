@@ -22,7 +22,7 @@ $(document).ready(function () {
     // Función para actualizar el dashboard
     function actualizarDashboard() {
         $.ajax({
-            url: '../controlador/DashboardSupplierController.php',
+            url: '/documenta/controlador/DashboardSupplierController.php',
             method: 'GET',
             dataType: 'json',
             cache: false,

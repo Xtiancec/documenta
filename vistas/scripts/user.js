@@ -126,7 +126,7 @@ function listar() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            url: '../controlador/UserController.php?op=listar',
+            url: '/documenta/controlador/UserController.php?op=listar',
             type: "GET",
             dataType: "json",
             error: function (e) {
@@ -164,7 +164,7 @@ function listar() {
 // Función para cargar las empresas en el select
 function cargarEmpresas(selector, selectedId = null) {
     $.ajax({
-        url: "../controlador/UserController.php?op=listarEmpresas",
+        url: "/documenta/controlador/UserController.php?op=listarEmpresas",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -184,7 +184,7 @@ function cargarEmpresas(selector, selectedId = null) {
 // Función para cargar Áreas en el select
 function cargarAreas(company_id, selector, selectedId = null) {
     $.ajax({
-        url: "../controlador/UserController.php?op=listarAreasPorEmpresa",
+        url: "/documenta/controlador/UserController.php?op=listarAreasPorEmpresa",
         type: "POST",
         data: { company_id: company_id },
         dataType: "json",
@@ -206,7 +206,7 @@ function cargarAreas(company_id, selector, selectedId = null) {
 // Función para cargar Puestos de Trabajo por Área en el select
 function cargarPuestosPorArea(area_id, selector, selectedId = null) {
     $.ajax({
-        url: "../controlador/UserController.php?op=listarPuestosPorArea",
+        url: "/documenta/controlador/UserController.php?op=listarPuestosPorArea",
         type: "POST",
         data: { area_id: area_id },
         dataType: "json",
@@ -232,7 +232,7 @@ function verificarDuplicadoUsername(username, userId = null, feedbackSelector) {
     if (!username) return;
 
     $.ajax({
-        url: '../controlador/UserController.php?op=verificarDuplicado',
+        url: '/documenta/controlador/UserController.php?op=verificarDuplicado',
         type: 'POST',
         data: {
             username: username,
@@ -260,7 +260,7 @@ function verificarYGuardar() {
     var username = $("#username").val().trim();
 
     $.ajax({
-        url: '../controlador/UserController.php?op=verificarDuplicado',
+        url: '/documenta/controlador/UserController.php?op=verificarDuplicado',
         type: 'POST',
         data: { username: username },
         dataType: 'json',
@@ -282,7 +282,7 @@ function guardarUsuario() {
     var formData = new FormData($("#formulario")[0]);
 
     $.ajax({
-        url: "../controlador/UserController.php?op=insertar",
+        url: "/documenta/controlador/UserController.php?op=insertar",
         type: "POST",
         data: formData,
         contentType: false,
@@ -322,7 +322,7 @@ function guardarUsuario() {
 // Función para mostrar los datos de un usuario en el formulario de actualización
 function mostrar(id) {
     $.ajax({
-        url: "../controlador/UserController.php?op=mostrar",
+        url: "/documenta/controlador/UserController.php?op=mostrar",
         type: "POST",
         data: { id: id },
         dataType: "json",
@@ -371,7 +371,7 @@ function actualizar() {
 
     // Verificar si el DNI ya existe en otro usuario, pero ignorar al mismo usuario que se está editando
     $.ajax({
-        url: '../controlador/UserController.php?op=verificarDuplicado',
+        url: '/documenta/controlador/UserController.php?op=verificarDuplicado',
         type: 'POST',
         data: {
             username: username,
@@ -384,7 +384,7 @@ function actualizar() {
             } else {
                 // Si no está duplicado, realizamos la actualización
                 $.ajax({
-                    url: "../controlador/UserController.php?op=actualizar",
+                    url: "/documenta/controlador/UserController.php?op=actualizar",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -424,7 +424,7 @@ function activar(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../controlador/UserController.php?op=activar',
+                url: '/documenta/controlador/UserController.php?op=activar',
                 type: 'POST',
                 data: { id: id },
                 dataType: 'json',
@@ -455,7 +455,7 @@ function desactivar(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../controlador/UserController.php?op=desactivar',
+                url: '/documenta/controlador/UserController.php?op=desactivar',
                 type: 'POST',
                 data: { id: id },
                 dataType: 'json',
@@ -478,7 +478,7 @@ function desactivar(id) {
 // Función para obtener el historial de acceso del usuario
 function mostrarHistorial(userId) {
     $.ajax({
-        url: '../controlador/UserController.php?op=obtenerHistorialAcceso',
+        url: '/documenta/controlador/UserController.php?op=obtenerHistorialAcceso',
         type: 'POST',
         data: { userId: userId },
         dataType: 'json',
@@ -509,7 +509,7 @@ function mostrarHistorial(userId) {
 // Function to check DNI when adding a user
 function consultarDNI(dni) {
     $.ajax({
-        url: 'proxy.php',
+        url: 'proxy',
         method: 'GET',
         data: { dni: dni },
         dataType: 'json',
@@ -533,7 +533,7 @@ function consultarDNI(dni) {
 // Function to check DNI when updating a user
 function consultarDNIUpdate(dni) {
     $.ajax({
-        url: 'proxy.php',
+        url: 'proxy',
         method: 'GET',
         data: { dni: dni },
         dataType: 'json',

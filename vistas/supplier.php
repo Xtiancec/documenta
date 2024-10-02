@@ -21,18 +21,18 @@ require 'layout/sidebar.php';
 <div class="row">
     <div class="col-12">
         <div class="card">
+            <div class="card-header text-white d-flex justify-content-between align-items-center bg-inverse">
+                <h5 class="mb-0 font-weight-bold" style="color: white; font-weight: bold;">Lista de Proveedores</h5>
+                <button class="btn btn-info" data-toggle="modal" data-target="#formularioregistros">
+                    <i class="fa fa-plus"></i> Agregar Proveedor
+                </button>
+            </div>
             <div class="card-body">
-                <div id="accordionBasic" class="widget-header">
-                    <div class="text-left">
-                        <button class="btn btn-success mb-3" data-toggle="modal" data-target="#formularioregistros">
-                            <i class="fa fa-plus"></i> Agregar Proveedor
-                        </button>
-                    </div>
-                </div>
+                
 
                 <!-- Tabla para listar proveedores -->
                 <div class="table-responsive mb-4 mt-4">
-                    <table id="tbllistado" class="table table-striped table-bordered" style="width:100%">
+                    <table id="tbllistado" class="table color-table inverse-table" style="width:100%">
                         <thead style="background-color: #2A3E52; color: white;">
                             <tr>
                                 <th>ID</th>
@@ -65,7 +65,7 @@ require 'layout/sidebar.php';
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form  id="formulario" method="POST">
+                                <form id="formulario" method="POST">
                                     <div class="row">
                                         <!-- Información de la Empresa -->
                                         <div class="col-12 mb-3">
@@ -228,4 +228,4 @@ require 'layout/footer.php';
 ?>
 
 
-<script src="scripts/supplier.js"></script>
+<script src="/documenta/vistas/scripts/supplier.js"></script>

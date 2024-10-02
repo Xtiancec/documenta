@@ -14,7 +14,7 @@ $page_specific_scripts = '
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-<script src="scripts/dashboardApplicant.js"></script>
+<script src="/rh2/vistas/scripts/dashboardApplicant.js"></script>
 ';
 
 // Incluir los layouts
@@ -157,7 +157,7 @@ require 'layout/sidebar.php';
 </div>
 
 <?php
-require 'layout/footer.php';
+require '/documenta/vistas/layout/footer.php';
 ?>
 
 <div id="dashboardData" data-applicant-id="<?= $_SESSION['applicant_id']; ?>"></div>

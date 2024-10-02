@@ -1037,7 +1037,7 @@ Main sidebar
 ******************/
 .left-sidebar {
   position: absolute;
-  width: 240px;
+  width: 192px;
   height: 100%;
   top: 0px;
   z-index: 20;
@@ -1099,10 +1099,10 @@ sidebar navigation
 
 .sidebar-nav ul li a {
   color: #687384;
-  padding: 8px 35px 8px 15px;
+  padding: 8px 25px 8px 10px;
   display: block;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .sidebar-nav ul li a.active,
@@ -1125,7 +1125,7 @@ sidebar navigation
 }
 
 .sidebar-nav ul li ul li a {
-  padding: 7px 35px 7px 15px;
+  padding: 7px 25px 7px 10px;
 }
 
 .sidebar-nav ul li ul ul {
@@ -1148,7 +1148,7 @@ sidebar navigation
 }
 
 .sidebar-nav>ul>li>a i {
-  width: 31px;
+  width: 21px;
   font-size: 24px;
   display: inline-block;
   vertical-align: middle;
@@ -1161,7 +1161,7 @@ sidebar navigation
 }
 
 .sidebar-nav>ul>li>a.active {
-  font-weight: 400;
+  font-weight: 500;
   background: #ffffff;
   color: #26c6da;
 }
@@ -1324,7 +1324,7 @@ When click on sidebar toggler and also for tablet
 
   .mini-sidebar .left-sidebar,
   .mini-sidebar .sidebar-footer {
-    left: -240px;
+    left: -192px;
   }
 
   .mini-sidebar.show-sidebar .left-sidebar,
@@ -1382,6 +1382,7 @@ File: scss
   background: #f4f6f9;
   padding-bottom: 60px;
   position: relative;
+  font-size: 80%;
 }
 
 .container-fluid {
@@ -1881,8 +1882,8 @@ Notify
 
 .right-sidebar {
   position: fixed;
-  right: -240px;
-  width: 240px;
+  right: -192px;
+  width: 192px;
   display: none;
   z-index: 1100;
   background: #ffffff;
@@ -1931,7 +1932,7 @@ Notify
 
 .shw-rside {
   right: 0px;
-  width: 240px;
+  width: 192px;
   display: block;
 }
 
@@ -5645,6 +5646,8 @@ Table-Data Table
 ******************/
 .dataTables_wrapper {
   padding-top: 10px;
+  font-size: 0.85rem; /* Reducir el tamaño de fuente general */
+
 }
 
 .dt-buttons {
@@ -5660,6 +5663,10 @@ Table-Data Table
   color: #ffffff;
   margin-right: 3px;
 }
+table.dataTable thead th {
+  font-size: 0.8rem; /* Reducir tamaño de fuente */
+  padding: 8px; /* Reducir padding */
+}
 
 .dt-buttons .dt-button:hover {
   background: #2f3d4a;
@@ -5668,6 +5675,8 @@ Table-Data Table
 .dataTables_info,
 .dataTables_length {
   display: inline-block;
+  font-weight: bold; /* Texto en negrita */
+
 }
 
 .dataTables_length {
@@ -5688,6 +5697,8 @@ Table-Data Table
   -o-transition: background 0s ease-out;
   transition: background 0s ease-out;
   padding-bottom: 5px;
+  font-size: 0.85rem; /* Reducir tamaño de fuente */
+
 }
 
 .dataTables_length select:focus {
@@ -5727,6 +5738,8 @@ Table-Data Table
   box-shadow: none;
   border-radius: 0;
   margin-left: 10px;
+  font-size: 0.85rem; /* Reducir tamaño de fuente */
+
 }
 
 .dataTables_filter input:focus {
@@ -5788,9 +5801,11 @@ table.dataTable thead .sorting:after {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  *cursor: hand;
+  cursor: hand;
   color: #67757c;
   border: 1px solid #ddd;
+  font-size: 0.85rem; /* Reducir tamaño de fuente */
+
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
@@ -7577,7 +7592,7 @@ File: scss
   }
 
   .auto-height {
-    min-height: 240px;
+    min-height: 192px;
   }
 }
 
@@ -7605,7 +7620,7 @@ File: scss
  ============================================================== */
 @media (min-width: 1024px) {
   .page-wrapper {
-    margin-left: 240px;
+    margin-left: 192px;
   }
 }
 
@@ -7658,7 +7673,7 @@ File: scss
  ============================================================== */
 @media (min-width: 768px) {
   .navbar-header {
-    width: 240px;
+    width: 192px;
     -webkit-flex-shrink: 0;
     -ms-flex-negative: 0;
     flex-shrink: 0;
@@ -7910,3 +7925,45 @@ File: scss
  
 
 
+#applicantsTable thead th {
+  background-color: #343a40;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Estilos para las barras de progreso */
+.progress {
+  height: 20px;
+}
+
+.progress-bar {
+  line-height: 20px;
+  font-size: 12px;
+}
+
+/* Estilos para las pestañas del modal */
+.nav-tabs .nav-link {
+  color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #343a40;
+  color: white;
+}
+
+/* Estilos para botones en listas */
+.list-group-item button {
+  margin-right: 5px;
+}
+
+/* Optimización de imágenes */
+img.lazyload {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+img.lazyload.lazyloaded {
+  opacity: 1;
+}

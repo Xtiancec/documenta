@@ -12,7 +12,7 @@ $(document).ready(function () {
 
     function cargarDocumentosDisponibles() {
         $.ajax({
-            url: '../controlador/DocumentUploadController.php?op=listarDocumentos',
+            url: '/documenta/controlador/DocumentUploadController.php?op=listarDocumentos',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -36,7 +36,7 @@ $(document).ready(function () {
 
     function obtenerEstadoDocumentos() {
         $.ajax({
-            url: '../controlador/DocumentUploadController.php?op=obtenerEstadoDocumentos',
+            url: '/documenta/controlador/DocumentUploadController.php?op=obtenerEstadoDocumentos',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -108,7 +108,8 @@ $(document).ready(function () {
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h4 class="m-b-0 text-white">
                                 <i class="${iconClass}" id="icon_${documentId}"></i> ${doc.name}
-                            </h4>                        </div>
+                            </h4>
+                        </div>
                         <div class="card-body d-flex flex-column">
                             <p class="card-text">${doc.description || 'Sube el documento requerido a continuación.'}</p>
                             ${plantillaHTML}
@@ -160,7 +161,7 @@ $(document).ready(function () {
 
     function cargarHistorialDocumentos(documentId) {
         $.ajax({
-            url: '../controlador/DocumentUploadController.php?op=obtenerHistorialDocumentos',
+            url: '/documenta/controlador/DocumentUploadController.php?op=obtenerHistorialDocumentos',
             method: 'POST',
             data: { category_id: documentId },
             dataType: 'json',
@@ -219,7 +220,7 @@ $(document).ready(function () {
         formData.append('comment', ''); // Puedes agregar un campo de comentario si lo deseas
 
         $.ajax({
-            url: '../controlador/DocumentUploadController.php?op=subir',
+            url: '/documenta/controlador/DocumentUploadController.php?op=subir',
             method: 'POST',
             data: formData,
             processData: false,
@@ -295,7 +296,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '../controlador/DocumentUploadController.php?op=eliminar',
+                    url: '/documenta/controlador/DocumentUploadController.php?op=eliminar',
                     method: 'POST',
                     data: { category_id: documentId },
                     dataType: 'json',
@@ -332,8 +333,8 @@ $(document).ready(function () {
     });
 
     function actualizarBarraProgreso() {
-        var progresoObligatorios = (uploadedObligatorios / totalObligatorios) * 100;
-        var progresoOpcionales = (uploadedOpcionales / totalOpcionales) * 100;
+        var progresoObligatorios = totalObligatorios > 0 ? (uploadedObligatorios / totalObligatorios) * 100 : 0;
+        var progresoOpcionales = totalOpcionales > 0 ? (uploadedOpcionales / totalOpcionales) * 100 : 0;
 
         // Actualizar barra de documentos obligatorios
         $('#progressObligatorios').css({

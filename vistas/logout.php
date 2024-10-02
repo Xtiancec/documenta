@@ -5,7 +5,7 @@ session_start();
 require_once "../modelos/User.php";
 
 // Determinar la URL de redirección por defecto
-$redirectUrl = "../vistas/login.php";
+$redirectUrl = "login";
 
 // Verificar si existe la variable 'user_type' en la sesión
 if (isset($_SESSION['user_type'])) {
@@ -21,17 +21,17 @@ if (isset($_SESSION['user_type'])) {
     // Determinar la URL de redirección según el tipo de usuario
     switch ($userType) {
         case 'user':
-            $redirectUrl = "../vistas/login.php";
+            $redirectUrl = "login";
             break;
         case 'applicant':
-            $redirectUrl = "../vistas/login_postulantes.php";
+            $redirectUrl = "login_postulantes";
             break;
         case 'supplier':
-            $redirectUrl = "../vistas/login_supplier.php";
+            $redirectUrl = "login_supplier";
             break;
         // Agrega más casos si tienes más tipos de usuarios
         default:
-            $redirectUrl = "../vistas/login.php";
+            $redirectUrl = "login";
     }
 }
 

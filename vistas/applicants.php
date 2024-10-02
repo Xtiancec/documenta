@@ -23,16 +23,16 @@ require 'layout/sidebar.php';
         <div class="card">
             <div class="card-body">
                 <!-- Botón para agregar postulante -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title">Listado de Postulantes</h5>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#formularioregistros">
+                <div class="card-header text-white d-flex justify-content-between align-items-center bg-inverse">
+                <h5 class="mb-0 font-weight-bold" style="color: white; font-weight: bold;">Lista de Postulantes</h5>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#formularioregistros">
                         <i class="fa fa-plus"></i> Agregar Postulante
                     </button>
                 </div>
 
                 <!-- Tabla para listar postulantes -->
                 <div class="table-responsive">
-                    <table id="tbllistado" class="table table-striped table-bordered" style="width:100%">
+                    <table id="tbllistado" class="table color-table inverse-table" style="width:100%">
                         <thead style="background-color: #2A3E52; color: white;">
                             <tr>
                                 <th>ID</th>
@@ -253,4 +253,4 @@ require 'layout/sidebar.php';
 require 'layout/footer.php';
 ?>
 <!-- Incluir el archivo JavaScript externo -->
-<script src="scripts/applicants.js"></script>
+<script src="/documenta/vistas/scripts/applicants.js"></script>

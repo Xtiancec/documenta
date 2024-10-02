@@ -77,7 +77,7 @@ class DocumentUpload
     }
 
     // Subir un documento
-    public function subirDocumento($data)
+    public function subirDocumento($data, $file)
     {
         try {
             global $conexion;
@@ -86,7 +86,6 @@ class DocumentUpload
             $category_id = limpiarCadena($data['category_id']);
             $document_type = limpiarCadena($data['document_type']);
             $document_name = limpiarCadena($data['document_name']);
-            $document_path = limpiarCadena($data['document_path']);
             $user_observation = limpiarCadena($data['user_observation']);
             $state_id = limpiarCadena($data['state_id']);
 
@@ -94,52 +93,72 @@ class DocumentUpload
             $sqlCheck = "SELECT id, document_path FROM documents WHERE user_id = '$user_id' AND category_id = '$category_id'";
             $resultCheck = ejecutarConsultaSimpleFila($sqlCheck);
 
-            if ($resultCheck) {
-                // Ya existe, actualizar el registro
-                $document_id = $resultCheck['id'];
-                $oldDocumentPath = $resultCheck['document_path'];
+            // Definir la ruta del directorio del usuario
+            $uploadDir = "../uploads/user/user_$user_id/";
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true); // Crear el directorio con permisos de escritura
+            }
 
-                // Eliminar el archivo anterior
-                if (file_exists($oldDocumentPath)) {
-                    unlink($oldDocumentPath);
-                }
+            // Generar un nombre único para el archivo
+            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $newFileName = uniqid('doc_', true) . '.' . $fileExtension;
+            $destinationPath = $uploadDir . $newFileName;
 
-                // Actualizar el registro
-                $sqlUpdate = "UPDATE documents SET 
-                                document_type = '$document_type',
-                                document_name = '$document_name',
-                                document_path = '$document_path',
-                                user_observation = '$user_observation',
-                                state_id = '$state_id',
-                                uploaded_at = NOW()
-                              WHERE id = '$document_id'";
+            // Mover el archivo a la ubicación final
+            if (move_uploaded_file($file['tmp_name'], $destinationPath)) {
+                if ($resultCheck) {
+                    // Ya existe, actualizar el registro
+                    $document_id = $resultCheck['id'];
+                    $oldDocumentPath = $resultCheck['document_path'];
 
-                $resultUpdate = ejecutarConsulta($sqlUpdate);
+                    // Eliminar el archivo anterior
+                    if (file_exists($oldDocumentPath)) {
+                        unlink($oldDocumentPath);
+                    }
 
-                if ($resultUpdate) {
-                    return ['success' => true];
+                    // Actualizar el registro
+                    $sqlUpdate = "UPDATE documents SET 
+                                    document_type = '$document_type',
+                                    document_name = '$document_name',
+                                    document_path = '$destinationPath',
+                                    user_observation = '$user_observation',
+                                    state_id = '$state_id',
+                                    uploaded_at = NOW()
+                                  WHERE id = '$document_id'";
+
+                    $resultUpdate = ejecutarConsulta($sqlUpdate);
+
+                    if ($resultUpdate) {
+                        return ['success' => true];
+                    } else {
+                        // Eliminar el nuevo archivo si hubo un error al actualizar
+                        unlink($destinationPath);
+                        return ['success' => false, 'error' => $conexion->error];
+                    }
                 } else {
-                    return ['success' => false, 'error' => $conexion->error];
+                    // No existe, insertar nuevo registro
+                    $sqlInsert = "INSERT INTO documents (user_id, document_type, document_name, document_path, category_id, user_observation, state_id, uploaded_at)
+                                  VALUES ('$user_id', '$document_type', '$document_name', '$destinationPath', '$category_id', '$user_observation', '$state_id', NOW())";
+
+                    $resultInsert = ejecutarConsulta_retornarID($sqlInsert);
+
+                    if ($resultInsert) {
+                        return ['success' => true];
+                    } else {
+                        // Eliminar el archivo si hubo un error al insertar
+                        unlink($destinationPath);
+                        return ['success' => false, 'error' => $conexion->error];
+                    }
                 }
             } else {
-                // No existe, insertar nuevo registro
-                $sqlInsert = "INSERT INTO documents (user_id, document_type, document_name, document_path, category_id, user_observation, state_id, uploaded_at)
-                              VALUES ('$user_id', '$document_type', '$document_name', '$document_path', '$category_id', '$user_observation', '$state_id', NOW())";
-
-                $resultInsert = ejecutarConsulta_retornarID($sqlInsert);
-
-                if ($resultInsert) {
-                    return ['success' => true];
-                } else {
-                    return ['success' => false, 'error' => $conexion->error];
-                }
+                return ['success' => false, 'message' => 'Error al mover el archivo al directorio de destino.'];
             }
         } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
+    // DocumentUpload.php
 
-    // Eliminar un documento
     public function eliminarDocumento($user_id, $category_id)
     {
         try {
@@ -155,23 +174,40 @@ class DocumentUpload
                 $document_id = $resultGet['id'];
                 $document_path = $resultGet['document_path'];
 
+                // Iniciar una transacción
+                $conexion->begin_transaction();
+
+                // Eliminar las entradas relacionadas en document_history
+                $sqlDeleteHistory = "DELETE FROM document_history WHERE document_id = '$document_id'";
+                $resultDeleteHistory = ejecutarConsulta($sqlDeleteHistory);
+
+                if (!$resultDeleteHistory) {
+                    $conexion->rollback();
+                    return ['success' => false, 'error' => 'Error al eliminar el historial del documento: ' . $conexion->error];
+                }
+
                 // Eliminar el registro de la base de datos
                 $sqlDelete = "DELETE FROM documents WHERE id = '$document_id'";
                 $resultDelete = ejecutarConsulta($sqlDelete);
 
                 if ($resultDelete) {
+                    // Confirmar la transacción
+                    $conexion->commit();
+
                     // Eliminar el archivo del sistema de archivos
                     if (file_exists($document_path)) {
                         unlink($document_path);
                     }
                     return ['success' => true];
                 } else {
-                    return ['success' => false, 'error' => $conexion->error];
+                    $conexion->rollback();
+                    return ['success' => false, 'error' => 'Error al eliminar el documento: ' . $conexion->error];
                 }
             } else {
                 return ['success' => false, 'error' => 'Documento no encontrado.'];
             }
         } catch (Exception $e) {
+            $conexion->rollback();
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

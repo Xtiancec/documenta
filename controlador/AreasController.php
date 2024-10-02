@@ -90,18 +90,19 @@ switch ($_GET["op"]) {
             echo json_encode([]);
             exit;
         }
-
+    
         $rspta = $area->listar_por_empresa($company_id_listar);
         $data = array();
-
+    
         while ($reg = $rspta->fetch_object()) {
             $data[] = array(
                 "id" => $reg->id,
                 "area_name" => htmlspecialchars($reg->area_name)
             );
         }
-
+    
         echo json_encode($data);
         break;
+    
 }
 ?>

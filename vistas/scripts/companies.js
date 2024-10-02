@@ -47,7 +47,7 @@ function listarCompanies() {
         "lengthMenu": [10, 10, 20, 50],
         "pageLength": 10,
         "ajax": {
-            url: '../controlador/CompaniesController.php?op=listar',
+            url: '/documenta/controlador/CompaniesController.php?op=listar',
             type: "GET",
             dataType: "json",
             error: function (e) {
@@ -61,7 +61,7 @@ function listarCompanies() {
 
 // Función mostrar Empresa para editar
 function mostrarEmpresa(id) {
-    $.post('../controlador/CompaniesController.php?op=mostrar', { id: id }, function (data) {
+    $.post('/documenta/controlador/CompaniesController.php?op=mostrar', { id: id }, function (data) {
         data = JSON.parse(data);
         $('#idUpdate').val(data.id);
         $('#company_nameUpdate').val(data.company_name);
@@ -115,7 +115,7 @@ function guardarEmpresa() {
     }
 
     // Verificar RUC único antes de guardar
-    $.post('../controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc }, function (response) {
+    $.post('/documenta/controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc }, function (response) {
         response = response.trim().toLowerCase();
         if (response === "ruc ya existe") {
             $('#ruc').addClass('is-invalid');
@@ -135,7 +135,7 @@ function guardarEmpresa() {
             $('#rucFeedback').text("");
 
             // Proceder a guardar la empresa
-            $.post('../controlador/CompaniesController.php?op=guardar', { company_name: company_name, ruc: ruc, description: description }, function (response) {
+            $.post('/documenta/controlador/CompaniesController.php?op=guardar', { company_name: company_name, ruc: ruc, description: description }, function (response) {
                 response = response.trim();
                 if (response === "Datos registrados correctamente") {
                     $('#formulario').modal('hide');
@@ -201,7 +201,7 @@ function actualizarEmpresa() {
     }
 
     // Verificar RUC único antes de actualizar
-    $.post('../controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc, id: id }, function (response) {
+    $.post('/documenta/controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc, id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response === "ruc ya existe") {
             $('#rucUpdate').addClass('is-invalid');
@@ -221,7 +221,7 @@ function actualizarEmpresa() {
             $('#rucUpdateFeedback').text("");
 
             // Proceder a actualizar la empresa
-            $.post('../controlador/CompaniesController.php?op=editar', { id: id, company_name: company_name, ruc: ruc, description: description }, function (response) {
+            $.post('/documenta/controlador/CompaniesController.php?op=editar', { id: id, company_name: company_name, ruc: ruc, description: description }, function (response) {
                 response = response.trim();
                 if (response === "Datos actualizados correctamente") {
                     $('#formularioActualizar').modal('hide');
@@ -270,7 +270,7 @@ function confirmarDesactivacionCompany(id) {
 }
 
 function desactivarCompany(id) {
-    $.post('../controlador/CompaniesController.php?op=desactivar', { id: id }, function (response) {
+    $.post('/documenta/controlador/CompaniesController.php?op=desactivar', { id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response.includes("correctamente")) {
             Swal.fire('Desactivado', 'El registro fue desactivado correctamente.', 'success');
@@ -302,7 +302,7 @@ function confirmarActivacionCompany(id) {
 }
 
 function activarCompany(id) {
-    $.post('../controlador/CompaniesController.php?op=activar', { id: id }, function (response) {
+    $.post('/documenta/controlador/CompaniesController.php?op=activar', { id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response.includes("correctamente")) {
             Swal.fire('Activado', 'El registro fue activado correctamente.', 'success');
@@ -341,7 +341,7 @@ function verificarRucEnAgregar() {
             return;
         }
 
-        $.post('../controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc }, function (response) {
+        $.post('/documenta/controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc }, function (response) {
             response = response.trim().toLowerCase();
             if (response === "ruc ya existe") {
                 $('#ruc').addClass('is-invalid');
@@ -365,7 +365,7 @@ function verificarRucEnActualizar() {
             return;
         }
 
-        $.post('../controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc, id: id }, function (response) {
+        $.post('/documenta/controlador/CompaniesController.php?op=verificar_ruc', { ruc: ruc, id: id }, function (response) {
             response = response.trim().toLowerCase();
             if (response === "ruc ya existe") {
                 $('#rucUpdate').addClass('is-invalid');

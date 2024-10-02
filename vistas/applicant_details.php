@@ -5,13 +5,13 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
-    header("Location: ../login.php");
+    header("Location: login_postulantes");
     exit();
 }
 
 require 'layout/header.php';
 require 'layout/navbar.php';
-require 'layout/sidebar.php';
+require 'layout/sidebar.php';   
 ?>
 
 <div class="row page-titles">
@@ -588,4 +588,4 @@ require 'layout/footer.php';
 ?>
 
 <!-- Incluir el archivo JavaScript externo -->
-<script src="scripts/applicant_details.js"></script>
+<script src="/documenta/vistas/scripts/applicant_details.js"></script>

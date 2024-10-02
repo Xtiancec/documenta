@@ -39,7 +39,7 @@ require 'layout/sidebar.php';
             <div class="card-body">
                 <!-- Tabla de Experiencia Educativa -->
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="tablaExperienciaEducativa">
+                    <table class="table color-table inverse-table" style="width:100%" id="tablaExperienciaEducativa">
                         <thead style="background-color: #2A3E52; color: white;">
                             <tr>
                                 <th>Institución</th>
@@ -204,6 +204,6 @@ require 'layout/sidebar.php';
 
 
 <!-- Scripts Mejorados -->
-<script src="scripts/experience.js"></script>
+<script src="/documenta/vistas/scripts/experience.js"></script>
 
 <?php require 'layout/footer.php'; ?>

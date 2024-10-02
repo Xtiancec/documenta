@@ -130,7 +130,7 @@ function inicializarValidacionFormularios() {
 function listar() {
     tabla = $("#tbllistado").DataTable({
         "ajax": {
-            url: "../controlador/ApplicantController.php?op=listar",
+            url: "/documenta/controlador/ApplicantController.php?op=listar",
             type: "GET",
             dataType: "json",
             dataSrc: function (json) {
@@ -151,13 +151,13 @@ function listar() {
             { "data": "Empresa" },
             { "data": "Área" },
             { "data": "Puesto" },
-            { 
+            {
                 "data": "Estado",
                 "render": function (data, type, row) {
                     return data; // Ya contiene el HTML
                 }
             },
-            { 
+            {
                 "data": "Opciones",
                 "orderable": false,
                 "searchable": false,
@@ -172,7 +172,10 @@ function listar() {
         },
         "pageLength": 10,
         "responsive": true,
-        "deferRender": true // Mejora el rendimiento con grandes conjuntos de datos
+        "deferRender": true,// Mejora el rendimiento con grandes conjuntos de datos
+        "buttons": [
+            'copy', 'excel', 'csv', 'pdf'
+        ]
     });
 }
 
@@ -194,7 +197,7 @@ function guardar(e) {
     $("#formulario button[type='submit']").prop('disabled', true);
 
     $.ajax({
-        url: "../controlador/ApplicantController.php?op=guardar",
+        url: "/documenta/controlador/ApplicantController.php?op=guardar",
         type: "POST",
         data: formData,
         dataType: "json", // Esperar respuesta en formato JSON
@@ -231,7 +234,6 @@ function guardar(e) {
 // Función para actualizar postulante
 function actualizar(e) {
     e.preventDefault();
-
     // Verificar si el formulario es válido
     let form = document.getElementById('formActualizar');
     if (form.checkValidity() === false) {
@@ -246,7 +248,7 @@ function actualizar(e) {
     $("#formActualizar button[type='submit']").prop('disabled', true);
 
     $.ajax({
-        url: "../controlador/ApplicantController.php?op=editar",
+        url: "/documenta/controlador/ApplicantController.php?op=editar",
         type: "POST",
         data: formData,
         dataType: "json", // Esperar respuesta en formato JSON
@@ -291,7 +293,7 @@ function desactivar(id) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            $.post('../controlador/ApplicantController.php?op=desactivar',  function (response) {
+            $.post('/documenta/controlador/ApplicantController.php?op=desactivar', function (response) {
                 if (response.status === "success") {
                     Swal.fire('Desactivado', response.message, 'success');
                     tabla.ajax.reload(null, false);
@@ -316,7 +318,7 @@ function activar(id) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            $.post('../controlador/ApplicantController.php?op=activar',  function (response) {
+            $.post('/documenta/controlador/ApplicantController.php?op=activar', function (response) {
                 if (response.status === "success") {
                     Swal.fire('Activado', response.message, 'success');
                     tabla.ajax.reload(null, false);
@@ -333,9 +335,9 @@ function activar(id) {
 // Función para mostrar los datos de un postulante en el formulario de actualización
 function mostrar(id) {
     $.ajax({
-        url: "../controlador/ApplicantController.php?op=mostrar",
+        url: "/documenta/controlador/ApplicantController.php?op=mostrar",
         type: "POST",
-        data: { id: id},
+        data: { id: id },
         dataType: "json",
         success: function (response) {
             if (response.status === "success") {
@@ -366,7 +368,7 @@ function mostrar(id) {
 // Función para cargar las empresas en el select
 function cargarEmpresas(selector, selectedId = null) {
     $.ajax({
-        url: "../controlador/ApplicantController.php?op=listarEmpresas",
+        url: "/documenta/controlador/ApplicantController.php?op=listarEmpresas",
         type: "GET",
         dataType: "json",
         success: function (response) {
@@ -401,7 +403,7 @@ function cargarAreasPorEmpresa(companyId, selector, selectedAreaId = null) {
     }
 
     $.ajax({
-        url: "../controlador/ApplicantController.php?op=listarAreasPorEmpresa",
+        url: "/documenta/controlador/ApplicantController.php?op=listarAreasPorEmpresa",
         type: "POST",
         data: { company_id: companyId },
         dataType: "json",
@@ -438,7 +440,7 @@ function cargarPuestosPorArea(areaId, selector, selectedJobId = null) {
     }
 
     $.ajax({
-        url: "../controlador/ApplicantController.php?op=listarPuestosPorArea",
+        url: "/documenta/controlador/ApplicantController.php?op=listarPuestosPorArea",
         type: "POST",
         data: { area_id: areaId },
         dataType: "json",
@@ -464,7 +466,7 @@ function cargarPuestosPorArea(areaId, selector, selectedJobId = null) {
 // Función para consultar DNI al agregar
 function consultarDNI(dni) {
     $.ajax({
-        url: 'proxy.php?dni=' + dni,
+        url: 'proxy?dni=' + dni,
         method: 'GET',
         dataType: 'json',
         success: function (response) {
@@ -487,7 +489,7 @@ function consultarDNI(dni) {
 // Función para consultar DNI al actualizar
 function consultarDNIUpdate(dni) {
     $.ajax({
-        url: 'proxy.php?dni=' + dni,
+        url: 'proxy?dni=' + dni,
         method: 'GET',
         dataType: 'json',
         success: function (response) {
@@ -532,7 +534,7 @@ function limpiarCamposDNIUpdate() {
 // Función para mostrar mensajes Toast
 function mostrarToast(mensaje, tipo) {
     let color;
-    switch(tipo) {
+    switch (tipo) {
         case "success":
             color = "#28a745";
             break;
@@ -553,7 +555,7 @@ function mostrarToast(mensaje, tipo) {
         gravity: "top",
         position: "right",
         backgroundColor: color,
-        className: "toast-progress",        
+        className: "toast-progress",
     }).showToast();
 }
 

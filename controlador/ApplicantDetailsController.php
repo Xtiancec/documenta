@@ -1,8 +1,8 @@
 <?php
-require_once "../config/Conexion.php"; // Asegúrate de ajustar la ruta según tu estructura de directorios
+require_once "../config/Conexion.php"; // Ajusta la ruta según tu estructura de directorios
 require_once "../modelos/ApplicantDetails.php";
 
-session_start(); // Asegurarse de que la sesión esté iniciada
+session_start(); // Asegúrate de que la sesión esté iniciada
 
 class ApplicantDetailsController
 {
@@ -12,7 +12,7 @@ class ApplicantDetailsController
             echo json_encode(['status' => false, 'message' => 'Sesión no iniciada.']);
             return;
         }
-    
+
         // Sanitizar y validar entradas
         $applicant_id = $_SESSION['applicant_id'];
         $phone = isset($_POST["phone"]) ? limpiarCadena($_POST["phone"]) : "";
@@ -28,73 +28,73 @@ class ApplicantDetailsController
         $children_count = isset($_POST["children_count"]) ? limpiarCadena($_POST["children_count"]) : "";
         $education_level = isset($_POST["education_level"]) ? limpiarCadena($_POST["education_level"]) : "";
         $photo = isset($_FILES["photo"]) ? $_FILES["photo"] : null;
-    
+
         // Validaciones
         $errors = [];
-    
+
         if (empty($phone)) {
             $errors[] = "El teléfono es obligatorio.";
         } elseif (!preg_match('/^\d{7,15}$/', $phone)) {
             $errors[] = "El teléfono debe contener entre 7 y 15 dígitos.";
         }
-    
+
         if (!empty($emergency_contact_phone) && !preg_match('/^\d{7,15}$/', $emergency_contact_phone)) {
             $errors[] = "El teléfono de emergencia debe contener entre 7 y 15 dígitos.";
         }
-    
+
         if (empty($gender)) {
             $errors[] = "El género es obligatorio.";
         } elseif (!in_array($gender, ['Masculino', 'Femenino', 'Otro'])) {
             $errors[] = "Género inválido.";
         }
-    
+
         if (empty($birth_date)) {
             $errors[] = "La fecha de nacimiento es obligatoria.";
         } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $birth_date)) {
             $errors[] = "La fecha de nacimiento no es válida.";
         }
-    
+
         if (empty($marital_status)) {
             $errors[] = "El estado civil es obligatorio.";
         } elseif (!in_array($marital_status, ['Soltero', 'Casado', 'Divorciado', 'Viudo'])) {
             $errors[] = "Estado civil inválido.";
         }
-    
+
         if (empty($education_level)) {
             $errors[] = "El nivel educativo es obligatorio.";
         }
-    
+
         if (empty($pais)) {
             $errors[] = "El país es obligatorio.";
         }
-    
+
         if (empty($departamento)) {
             $errors[] = "El departamento es obligatorio.";
         }
-    
+
         if (empty($provincia)) {
             $errors[] = "La provincia es obligatoria.";
         }
-    
+
         if (empty($direccion)) {
             $errors[] = "La dirección es obligatoria.";
         }
-    
+
         // Validar la foto si se proporciona
         if ($photo && $photo['error'] != UPLOAD_ERR_NO_FILE) {
-            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
             if ($photo['error'] != UPLOAD_ERR_OK) {
                 $errors[] = "Error al subir la foto.";
             } elseif (!in_array($photo['type'], $allowed_types)) {
                 $errors[] = "Tipo de archivo de foto no permitido. Solo se aceptan JPG, PNG y GIF.";
             }
         }
-    
+
         if (!empty($errors)) {
             echo json_encode(['status' => false, 'message' => implode(" ", $errors)]);
             return;
         }
-    
+
         // Crear instancia y guardar
         $applicantDetails = new ApplicantDetails();
         $result = $applicantDetails->insertar(
@@ -113,7 +113,7 @@ class ApplicantDetailsController
             $education_level,
             $photo
         );
-    
+
         echo json_encode([
             'status' => $result ? true : false,
             'message' => $result ? "Datos guardados correctamente." : "Error al guardar los datos."
@@ -126,7 +126,7 @@ class ApplicantDetailsController
             echo json_encode(['status' => false, 'message' => 'Sesión no iniciada.']);
             return;
         }
-    
+
         // Sanitizar y validar entradas
         $applicant_id = $_SESSION['applicant_id'];
         $phone = isset($_POST["phoneUpdate"]) ? limpiarCadena($_POST["phoneUpdate"]) : "";
@@ -142,77 +142,77 @@ class ApplicantDetailsController
         $children_count = isset($_POST["children_countUpdate"]) ? limpiarCadena($_POST["children_countUpdate"]) : "";
         $education_level = isset($_POST["education_levelUpdate"]) ? limpiarCadena($_POST["education_levelUpdate"]) : "";
         $photo = isset($_FILES["photoUpdate"]) ? $_FILES["photoUpdate"] : null;
-    
+
         // Validaciones
         $errors = [];
-    
+
         if (empty($phone)) {
             $errors[] = "El teléfono es obligatorio.";
         } elseif (!preg_match('/^\d{7,15}$/', $phone)) {
             $errors[] = "El teléfono debe contener entre 7 y 15 dígitos.";
         }
-    
+
         if (!empty($emergency_contact_phone) && !preg_match('/^\d{7,15}$/', $emergency_contact_phone)) {
             $errors[] = "El teléfono de emergencia debe contener entre 7 y 15 dígitos.";
         }
-    
+
         if (empty($gender)) {
             $errors[] = "El género es obligatorio.";
         } elseif (!in_array($gender, ['Masculino', 'Femenino', 'Otro'])) {
             $errors[] = "Género inválido.";
         }
-    
+
         if (empty($birth_date)) {
             $errors[] = "La fecha de nacimiento es obligatoria.";
         } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $birth_date)) {
             $errors[] = "La fecha de nacimiento no es válida.";
         }
-    
+
         if (empty($marital_status)) {
             $errors[] = "El estado civil es obligatorio.";
         } elseif (!in_array($marital_status, ['Soltero', 'Casado', 'Divorciado', 'Viudo'])) {
             $errors[] = "Estado civil inválido.";
         }
-    
+
         if (empty($education_level)) {
             $errors[] = "El nivel educativo es obligatorio.";
         }
-    
+
         if (empty($pais)) {
             $errors[] = "El país es obligatorio.";
         }
-    
+
         if (empty($departamento)) {
             $errors[] = "El departamento es obligatorio.";
         }
-    
+
         if (empty($provincia)) {
             $errors[] = "La provincia es obligatoria.";
         }
-    
+
         if (empty($direccion)) {
             $errors[] = "La dirección es obligatoria.";
         }
-    
+
         // Validar la foto si se proporciona
         if ($photo && $photo['error'] != UPLOAD_ERR_NO_FILE) {
-            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
             if ($photo['error'] != UPLOAD_ERR_OK) {
                 $errors[] = "Error al subir la foto.";
             } elseif (!in_array($photo['type'], $allowed_types)) {
                 $errors[] = "Tipo de archivo de foto no permitido. Solo se aceptan JPG, PNG y GIF.";
             }
         }
-    
+
         if (!empty($errors)) {
             echo json_encode(['status' => false, 'message' => implode(" ", $errors)]);
             return;
         }
-    
+
         // Crear instancia y verificar existencia
         $applicantDetails = new ApplicantDetails();
         $existingDetails = $applicantDetails->mostrar($applicant_id);
-    
+
         if ($existingDetails) {
             $result = $applicantDetails->actualizar(
                 $existingDetails['id'],
@@ -300,17 +300,16 @@ class ApplicantDetailsController
         echo json_encode(['departamentos' => $departamentos]);
     }
 
-    // Método para obtener provincias basadas en el departamento
     public function obtenerProvincias()
     {
         if (!isset($_GET['departamento'])) {
             echo json_encode(['provincias' => []]);
             return;
         }
-    
+
         $departamento = $_GET['departamento'];
-    
-        // Lista completa de provincias por departamento (ejemplo parcial)
+
+        // Lista completa de provincias por departamento
         $provinciasPorDepartamento = [
             "Amazonas" => ["Chachapoyas", "Bagua", "Bongará", "Condorcanqui", "Luya", "Rodríguez de Mendoza", "Utcubamba"],
             "Áncash" => ["Huaraz", "Aija", "Antonio Raymondi", "Asunción", "Bolognesi", "Carhuaz", "Carlos Fermín Fitzcarrald", "Casma", "Corongo", "Huari", "Huarmey", "Huaylas", "Mariscal Luzuriaga", "Ocros", "Pallasca", "Pomabamba", "Recuay", "Santa", "Sihuas", "Yungay"],
@@ -338,15 +337,11 @@ class ApplicantDetailsController
             "Tumbes" => ["Tumbes", "Contralmirante Villar", "Tumbes"],
             "Ucayali" => ["Coronel Portillo", "Atalaya", "Padre Abad", "Purús"]
         ];
-    
+
         $provincias = isset($provinciasPorDepartamento[$departamento]) ? $provinciasPorDepartamento[$departamento] : [];
-    
+
         echo json_encode(['provincias' => $provincias]);
     }
-    
-    // Método para obtener distritos basados en la provincia
-    // Se elimina este método ya que ahora utilizaremos 'direccion' en lugar de 'distrito'
-    // Por lo tanto, no es necesario cargar distritos
 }
 
 if (isset($_GET["op"])) {
@@ -367,7 +362,6 @@ if (isset($_GET["op"])) {
         case 'obtenerProvincias':
             $controller->obtenerProvincias();
             break;
-        // Se elimina el caso 'obtenerDistritos' ya que ya no es necesario
         default:
             echo json_encode(['status' => false, 'message' => 'Operación no válida.']);
             break;

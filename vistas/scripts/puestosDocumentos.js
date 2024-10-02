@@ -8,7 +8,7 @@ $(document).ready(function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: '../controlador/DocumentMandatoryController.php?op=listarPuestosConDocumentosPorEmpresa',
+                url: '/documenta/controlador/DocumentMandatoryController.php?op=listarPuestosConDocumentosPorEmpresa',
                 type: "GET",
                 dataType: "json",
                 error: function (e) {
@@ -39,7 +39,7 @@ $(document).ready(function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: '../controlador/DocumentMandatoryController.php?op=listarPuestosSinDocumentos',
+                url: '/documenta/controlador/DocumentMandatoryController.php?op=listarPuestosSinDocumentos',
                 type: "GET",
                 dataType: "json",
                 error: function (e) {

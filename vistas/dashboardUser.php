@@ -187,7 +187,7 @@ require 'layout/sidebar.php';
 <!-- Incluir FontAwesome para iconos -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Tu script personalizado -->
-<script src="scripts/dashboardUser.js"></script>
+<script src="/documenta/vistas/scripts/dashboardUser.js"></script>
 
 <?php
 require 'layout/footer.php';

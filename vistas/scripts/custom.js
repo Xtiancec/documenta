@@ -7,7 +7,7 @@ $(document).ready(function () {
         var theme = $(this).data('theme'); // Obtener el valor de data-theme
 
         // **Actualizar la ruta al archivo CSS del tema**
-        var themePath = '/rh/app/template/css/colors/' + theme + '.css'; // Ruta correcta al archivo CSS
+        var themePath = '/documenta/app/template/css/colors/' + theme + '.css'; // Ruta correcta al archivo CSS
 
         var $this = $(this); // Guardar referencia a 'this'
 
@@ -37,7 +37,7 @@ $(document).ready(function () {
     // Cargar el tema guardado al iniciar la página
     var savedTheme = localStorage.getItem('selectedTheme');
     if (savedTheme) {
-        var themePath = '/rh/app/template/css/colors/' + savedTheme + '.css'; // Ruta correcta al archivo CSS
+        var themePath = '/documenta/app/template/css/colors/' + savedTheme + '.css'; // Ruta correcta al archivo CSS
 
         $('#theme').attr('href', themePath);
 

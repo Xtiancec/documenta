@@ -148,7 +148,27 @@ class Jobs
         return ejecutarConsulta($sql, $params);
     }
 
-    
+    public function listarPuestosPorEmpresa($company_id)
+    {
+        // Los puestos están relacionados con áreas, que a su vez están relacionadas con empresas
+        $sql = "SELECT j.id, j.position_name 
+                FROM jobs j
+                JOIN areas a ON j.area_id = a.id
+                WHERE a.company_id = ? AND j.is_active = 1
+                GROUP BY j.id, j.position_name
+                ORDER BY j.position_name ASC";
+        $params = [$company_id];
+        $result = ejecutarConsulta($sql, $params);
+        $puestos = [];
+
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $puestos[] = $row;
+            }
+        }
+
+        return $puestos;
+    }
 
     public function listarFiltrado($company_id, $area_id, $position_id)
     {
@@ -172,5 +192,6 @@ class Jobs
         return ejecutarConsulta($sql);
     }
 
+    // Nota: Eliminada la segunda definición de mostrarTrabajo
 }
 ?>

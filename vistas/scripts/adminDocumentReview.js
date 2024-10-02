@@ -6,7 +6,7 @@ $(document).ready(function () {
         var formData = new FormData(this);
 
         $.ajax({
-            url: '../controlador/AdminDocumentController.php?op=aprobarDocumentos',
+            url: '/documenta/controlador/AdminDocumentController.php?op=aprobarDocumentos',
             method: 'POST',
             data: formData,
             processData: false,
@@ -25,7 +25,7 @@ $(document).ready(function () {
         var formData = new FormData(this);
 
         $.ajax({
-            url: '../controlador/AdminDocumentController.php?op=aprobarDocumentos',
+            url: '/documenta/controlador/AdminDocumentController.php?op=aprobarDocumentos',
             method: 'POST',
             data: formData,
             processData: false,
@@ -44,7 +44,7 @@ $(document).ready(function () {
         $('#document-review-list-opcionales').empty();
 
         $.ajax({
-            url: '../controlador/AdminDocumentController.php?op=listarDocumentosParaRevisar',
+            url: '/documenta/controlador/AdminDocumentController.php?op=listarDocumentosParaRevisar',
             method: 'GET',
             success: function (response) {
                 var documentos = JSON.parse(response);

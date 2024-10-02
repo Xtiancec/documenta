@@ -30,7 +30,7 @@ require 'layout/sidebar.php';
             <div class="card-body">
                 <h4 class="card-title">Documentos Pendientes de Evaluación</h4>
                 <!-- Aquí se agrega el atributo "data-tablesaw-mode" para que Tablesaw lo reconozca -->
-                <table id="documentTable" class="tablesaw table-bordered table-hover table" data-tablesaw-mode="columntoggle">
+                <table id="documentTable" class="table color-table inverse-table" style="width:100%" data-tablesaw-mode="columntoggle">
                     <thead class="bg-inverse text-white">
                         <tr>
                             <th scope="col" data-tablesaw-priority="persist">Empresa</th>
@@ -54,7 +54,7 @@ require 'layout/sidebar.php';
 </div>
 
 
-<script src="scripts/evaluarDocumentoPostulante.js"></script>
+<script src="/documenta/vistas/scripts/evaluarDocumentoPostulante.js"></script>
 
 <?php
 require 'layout/footer.php';

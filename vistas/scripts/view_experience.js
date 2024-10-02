@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para obtener experiencias educativas
     function obtenerEducacion() {
-        fetch('../controlador/ExperienceController.php?op=mostrarEducacion', {
+        fetch('/documenta/controlador/ExperienceController.php?op=mostrarEducacion', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para obtener experiencias laborales
     function obtenerTrabajo() {
-        fetch('../controlador/ExperienceController.php?op=mostrarTrabajo', {
+        fetch('/documenta/controlador/ExperienceController.php?op=mostrarTrabajo', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'

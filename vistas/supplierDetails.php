@@ -9,7 +9,7 @@ if (
     $_SESSION['user_type'] !== 'supplier' ||
     $_SESSION['user_role'] !== 'proveedor'
 ) {
-    header("Location: ../login_supplier.php"); // Asegúrate de que esta sea la URL correcta de login
+    header("Location: login_suplier"); // Asegúrate de que esta sea la URL correcta de login
     exit();
 }
 
@@ -182,4 +182,4 @@ require 'layout/sidebar.php';
 require 'layout/footer.php';
 ?>
 
-<script src="scripts/supplierDetails.js"></script>
+<script src="/documenta/vistas/scripts/supplierDetails.js"></script>

@@ -1,10 +1,16 @@
 <?php
 // documents_upload.php
-session_start();
-
-// Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'user' || $_SESSION['user_role'] !== 'user') {
-    header("Location: ../login.php");
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+// Verificar si el usuario ha iniciado sesión y es un adminpr (Administrador de Proveedores) o superadmin
+if (
+    !isset($_SESSION['user_type']) ||
+    $_SESSION['user_type'] !== 'user' ||
+    !isset($_SESSION['user_role']) ||
+    !in_array($_SESSION['user_role'], ['superadmin', 'adminpr','user']) // Permitir 'superadmin' o 'adminpr'
+) {
+    header("Location: login"); // Asegúrate de que esta sea la URL correcta de login
     exit();
 }
 
@@ -83,4 +89,4 @@ require 'layout/footer.php';
 ?>
 
 <!-- Tu archivo JavaScript -->
-<script src="scripts/documentUpload.js"></script>
+<script src="/documenta/vistas/scripts/documentUpload.js"></script>

@@ -3,7 +3,7 @@
 $(document).ready(function() {
     // Función para establecer el tema
     function setTheme(themeName) {
-        var themePath = '../app/template/css/colors/' + themeName + '.css';
+        var themePath = '/documenta/app/template/css/colors/' + themeName + '.css';
         $('#theme').attr('href', themePath);
 
         // Actualizar la clase 'working' en el sidebar

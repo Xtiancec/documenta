@@ -10,6 +10,17 @@ function InitJobs() {
     verificarJobEnAgregar();
     verificarJobEnActualizar();
 
+    $('#company_select').on('change', function () {
+        var company_id = $(this).val();
+        cargarAreas(company_id, '#area_select');
+    });
+
+    $('#company_selectUpdate').on('change', function () {
+        var company_id = $(this).val();
+        cargarAreas(company_id, '#area_selectUpdate');
+    });
+
+
     // Limpieza de formularios al cerrar los modales
     $('#formularioJob').on('hidden.bs.modal', function () {
         $('#formularioJobForm')[0].reset();
@@ -60,7 +71,7 @@ function listarJobs() {
         "lengthMenu": [10, 20, 50, 100],
         "pageLength": 10,
         "ajax": {
-            url: '../controlador/JobsController.php?op=listar',
+            url: '/documenta/controlador/JobsController.php?op=listar',
             type: "GET",
             dataType: "json",
             data: function (d) {
@@ -131,18 +142,18 @@ function configurarFiltrosExternos() {
 
 // Función para cargar Áreas Dinámicamente en los Filtros
 function cargarAreas(company_id, selector, selected_area_id = null) {
-    if (company_id === "") {
-        $(selector).empty().append('<option value="">Todas las Áreas</option>');
+    if (!company_id) {
+        $(selector).empty().append('<option value="">Seleccione un área</option>');
         return;
     }
 
     $.ajax({
-        url: '../controlador/AreasController.php?op=listar_por_empresa',
+        url: '/documenta/controlador/AreasController.php?op=listar_por_empresa',
         type: 'GET',
         data: { company_id: company_id },
         dataType: 'json',
         success: function (data) {
-            $(selector).empty().append('<option value="">Todas las Áreas</option>');
+            $(selector).empty().append('<option value="">Seleccione un área</option>');
             $.each(data, function (index, area) {
                 var selected = (selected_area_id && area.id == selected_area_id) ? 'selected' : '';
                 $(selector).append('<option value="' + area.id + '" ' + selected + '>' + area.area_name + '</option>');
@@ -150,10 +161,11 @@ function cargarAreas(company_id, selector, selected_area_id = null) {
         },
         error: function (e) {
             console.log(e.responseText);
-            $(selector).empty().append('<option value="">Todas las Áreas</option>');
+            $(selector).empty().append('<option value="">Seleccione un área</option>');
         }
     });
 }
+
 
 // Función para cargar Puestos Dinámicamente según Área Seleccionada
 function cargarJobs(area_id, selector, selected_job_id = null) {
@@ -163,7 +175,7 @@ function cargarJobs(area_id, selector, selected_job_id = null) {
     }
 
     $.ajax({
-        url: '../controlador/JobsController.php?op=listar_por_area',
+        url: '/documenta/controlador/JobsController.php?op=listar_por_area',
         type: 'GET',
         data: { area_id: area_id },
         dataType: 'json',
@@ -183,7 +195,7 @@ function cargarJobs(area_id, selector, selected_job_id = null) {
 
 // Función mostrar puesto para editar
 function mostrarJob(id) {
-    $.post('../controlador/JobsController.php?op=mostrar', { id: id }, function (data) {
+    $.post('/documenta/controlador/JobsController.php?op=mostrar', { id: id }, function (data) {
         data = JSON.parse(data);
         $('#job_idUpdate').val(data.id);
         $('#position_nameUpdate').val(data.position_name);
@@ -228,7 +240,7 @@ function guardarJob() {
     }
 
     // Verificar puesto único antes de guardar
-    $.post('../controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id }, function (response) {
+    $.post('/documenta/controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id }, function (response) {
         response = response.trim().toLowerCase();
         if (response === "puesto ya existe") {
             $('#position_name').addClass('is-invalid');
@@ -248,7 +260,7 @@ function guardarJob() {
             $('#positionFeedback').text("");
 
             // Proceder a guardar el puesto
-            $.post('../controlador/JobsController.php?op=guardar', { position_name: position_name, area_id: area_id }, function (response) {
+            $.post('/documenta/controlador/JobsController.php?op=guardar', { position_name: position_name, area_id: area_id }, function (response) {
                 response = response.trim().toLowerCase();
                 if (response === "puesto de trabajo registrado correctamente") {
                     $('#formularioJob').modal('hide');
@@ -300,7 +312,7 @@ function actualizarJob() {
     }
 
     // Verificar puesto único antes de actualizar
-    $.post('../controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id, id: id }, function (response) {
+    $.post('/documenta/controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id, id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response === "puesto ya existe") {
             $('#position_nameUpdate').addClass('is-invalid');
@@ -320,7 +332,7 @@ function actualizarJob() {
             $('#positionUpdateFeedback').text("");
 
             // Proceder a actualizar el puesto
-            $.post('../controlador/JobsController.php?op=editar', { id: id, position_name: position_name, area_id: area_id }, function (response) {
+            $.post('/documenta/controlador/JobsController.php?op=editar', { id: id, position_name: position_name, area_id: area_id }, function (response) {
                 response = response.trim().toLowerCase();
                 if (response === "puesto de trabajo actualizado correctamente") {
                     $('#formularioActualizarJob').modal('hide');
@@ -385,7 +397,7 @@ function confirmarDesactivacionJob(id) {
 }
 
 function desactivarJob(id) {
-    $.post('../controlador/JobsController.php?op=desactivar', { id: id }, function (response) {
+    $.post('/documenta/controlador/JobsController.php?op=desactivar', { id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response.includes("correctamente")) {
             Swal.fire('Desactivado', 'El puesto de trabajo fue desactivado correctamente.', 'success');
@@ -417,7 +429,7 @@ function confirmarActivacionJob(id) {
 }
 
 function activarJob(id) {
-    $.post('../controlador/JobsController.php?op=activar', { id: id }, function (response) {
+    $.post('/documenta/controlador/JobsController.php?op=activar', { id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response.includes("correctamente")) {
             Swal.fire('Activado', 'El puesto de trabajo fue activado correctamente.', 'success');
@@ -442,7 +454,7 @@ function verificarJobEnAgregar() {
             return;
         }
 
-        $.post('../controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id }, function (response) {
+        $.post('/documenta/controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id }, function (response) {
             response = response.trim().toLowerCase();
             if (response === "puesto ya existe") {
                 // Mostrar feedback de error
@@ -479,7 +491,7 @@ function verificarJobEnActualizar() {
             return;
         }
 
-        $.post('../controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id, id: id }, function (response) {
+        $.post('/documenta/controlador/JobsController.php?op=verificar_puesto', { position_name: position_name, area_id: area_id, id: id }, function (response) {
             response = response.trim().toLowerCase();
             if (response === "puesto ya existe") {
                 // Mostrar feedback de error

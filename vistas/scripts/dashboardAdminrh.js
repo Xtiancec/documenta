@@ -26,7 +26,7 @@ $(document).ready(function () {
     // Función para actualizar el dashboard
     function actualizarDashboard() {
         $.ajax({
-            url: '../controlador/DashboardAdminrhController.php',
+            url: '/documenta/controlador/DashboardAdminrhController.php',
             method: 'GET',
             dataType: 'json',
             cache: false,

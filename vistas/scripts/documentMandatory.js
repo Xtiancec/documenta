@@ -1,4 +1,5 @@
-// scripts/documentMandatory.js
+
+
 $(document).ready(function () {
     // Inicializar select2 para mejorar la experiencia de usuario
     $('#company_id, #position_id').select2({
@@ -35,7 +36,7 @@ $(document).ready(function () {
     // Función para cargar empresas
     function cargarEmpresas() {
         $.ajax({
-            url: '../controlador/DocumentMandatoryController.php?op=selectCompanies',
+            url: '/documenta/controlador/DocumentMandatoryController.php?op=selectCompanies',
             method: 'GET',
             success: function (data) {
                 $('#company_id').html('<option value="">Seleccione una empresa</option>' + data);  // Llenar el select con empresas
@@ -52,7 +53,7 @@ $(document).ready(function () {
         $('#position_id').empty();  // Limpiar el select de puestos
 
         $.ajax({
-            url: '../controlador/DocumentMandatoryController.php?op=selectJobPositionsByCompany',
+            url: '/documenta/controlador/DocumentMandatoryController.php?op=selectJobPositionsByCompany',
             method: 'POST',
             data: { company_id: company_id },
             success: function (data) {
@@ -76,7 +77,7 @@ $(document).ready(function () {
         $('#document-list').empty();  // Limpiar la lista de documentos
 
         $.ajax({
-            url: '../controlador/DocumentMandatoryController.php?op=listarDocumentosAsignados',
+            url: '/documenta/controlador/DocumentMandatoryController.php?op=listarDocumentosAsignados',
             method: 'POST',
             data: { position_id: position_id },
             success: function (response) {
@@ -200,7 +201,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '../controlador/DocumentMandatoryController.php?op=guardarAsignacion',
+            url: '/documenta/controlador/DocumentMandatoryController.php?op=guardarAsignacion',
             method: 'POST',
             data: {
                 position_id: position_id,

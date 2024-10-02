@@ -84,52 +84,24 @@ class DocumentApplicant
         return ejecutarConsulta($sql, $params);
     }
 
-    // Listar todos los documentos de los postulantes con detalles adicionales y opcionalmente filtrar por fechas
-    public function listarTodos($start_date = '', $end_date = '')
+    // Obtener el nombre completo del postulante
+    public function obtenerNombreApplicant($applicant_id)
     {
-        $sql = "SELECT 
-    d.id, 
-    d.applicant_id,
-    a.names AS applicant_name, 
-    a.lastname, 
-    a.username,
-    a.email,
-    ad.photo,  -- Columna de la foto del postulante
-    d.document_name, 
-    d.state_id,
-    j.position_name AS job_name,
-    c.company_name AS company_name
-FROM documents_applicants d
-JOIN applicants a ON d.applicant_id = a.id
-JOIN jobs j ON a.job_id = j.id
-JOIN companies c ON a.company_id = c.id
-LEFT JOIN applicants_details ad ON a.id = ad.applicant_id";
-     // Unir con la tabla applicants_details
-
-        $params = [];
-
-        if (!empty($start_date) && !empty($end_date)) {
-            $sql .= " WHERE d.created_at BETWEEN ? AND ?";
-            $params[] = $start_date . " 00:00:00";
-            $params[] = $end_date . " 23:59:59";
-        }
-
-        $sql .= " ORDER BY d.created_at DESC";
-
-        $result = ejecutarConsulta($sql, $params);
-
-        if ($result) {
-            $rows = [];
-            while ($row = $result->fetch_assoc()) {
-                $rows[] = $row;
-            }
-            return $rows;
-        } else {
-            return [];
-        }
+        $sql = "SELECT CONCAT(a.names, ' ', a.lastname, ' ', a.surname) AS nombre 
+                FROM applicants a 
+                WHERE a.id = ?";
+        $params = [$applicant_id];
+        $result = ejecutarConsultaSimpleFila($sql, $params);
+        return $result ? $result['nombre'] : false;
     }
 
-    // Obtener documentos por usuario
+    /**
+     * Obtener documentos por usuario con filtros
+     * @param int $user_id - ID del postulante
+     * @param string|null $start_date - Fecha de inicio
+     * @param string|null $end_date - Fecha de fin
+     * @return array - Lista de documentos
+     */
     public function obtenerDocumentosPorUsuario($user_id, $start_date = '', $end_date = '')
     {
         $sql = "SELECT 
@@ -169,4 +141,148 @@ LEFT JOIN applicants_details ad ON a.id = ad.applicant_id";
             return [];
         }
     }
+
+    /**
+     * Contar total de postulantes para Server-Side Processing con filtros
+     * @param string|null $start_date
+     * @param string|null $end_date
+     * @param string $search
+     * @param int|null $company_id
+     * @param int|null $job_id
+     * @return int - Total de registros
+     */
+    public function contarTodos($start_date = '', $end_date = '', $search = '', $company_id = null, $job_id = null)
+    {
+        $sql = "SELECT COUNT(DISTINCT a.id) as total
+                FROM documents_applicants d
+                JOIN applicants a ON d.applicant_id = a.id
+                JOIN jobs j ON a.job_id = j.id
+                JOIN companies c ON a.company_id = c.id
+                LEFT JOIN applicants_details ad ON a.id = ad.applicant_id
+                WHERE 1=1";
+
+        $params = [];
+
+        if (!empty($start_date) && !empty($end_date)) {
+            $sql .= " AND d.created_at BETWEEN ? AND ?";
+            $params[] = $start_date . " 00:00:00";
+            $params[] = $end_date . " 23:59:59";
+        }
+
+        if (!empty($company_id)) {
+            $sql .= " AND c.id = ?";
+            $params[] = $company_id;
+        }
+
+        if (!empty($job_id)) {
+            $sql .= " AND j.id = ?";
+            $params[] = $job_id;
+        }
+
+        if (!empty($search)) {
+            $sql .= " AND (c.company_name LIKE ? OR j.position_name LIKE ? OR a.names LIKE ? OR a.lastname LIKE ? OR a.email LIKE ?)";
+            $searchParam = "%" . $search . "%";
+            $params = array_merge($params, [$searchParam, $searchParam, $searchParam, $searchParam, $searchParam]);
+        }
+
+        $result = ejecutarConsultaSimpleFila($sql, $params);
+        return $result ? intval($result['total']) : 0;
+    }
+
+    /**
+     * Listar postulantes con Server-Side Processing y filtros
+     * @param int $start
+     * @param int $length
+     * @param string $orderColumn
+     * @param string $orderDir
+     * @param string|null $start_date
+     * @param string|null $end_date
+     * @param string $search
+     * @param int|null $company_id
+     * @param int|null $job_id
+     * @return array - Lista de postulantes
+     */
+    public function listarTodosServerSide($start, $length, $orderColumn, $orderDir, $start_date = '', $end_date = '', $search = '', $company_id = null, $job_id = null)
+    {
+        $sql = "SELECT 
+                    a.id,
+                    c.company_name,
+                    j.position_name,
+                    a.names,
+                    a.lastname,
+                    a.username,
+                    a.email,
+                    ad.photo,
+                    COUNT(CASE WHEN d.document_name LIKE '%cv%' THEN 1 END) as total_uploaded_cv,
+                    COUNT(CASE WHEN d.document_name NOT LIKE '%cv%' THEN 1 END) as total_uploaded_other,
+                    SUM(CASE WHEN d.state_id = 2 AND d.document_name LIKE '%cv%' THEN 1 ELSE 0 END) as total_approved_cv,
+                    SUM(CASE WHEN d.state_id = 2 AND d.document_name NOT LIKE '%cv%' THEN 1 ELSE 0 END) as total_approved_other
+                FROM documents_applicants d
+                JOIN applicants a ON d.applicant_id = a.id
+                JOIN jobs j ON a.job_id = j.id
+                JOIN companies c ON a.company_id = c.id
+                LEFT JOIN applicants_details ad ON a.id = ad.applicant_id
+                WHERE 1=1";
+
+        $params = [];
+
+        if (!empty($start_date) && !empty($end_date)) {
+            $sql .= " AND d.created_at BETWEEN ? AND ?";
+            $params[] = $start_date . " 00:00:00";
+            $params[] = $end_date . " 23:59:59";
+        }
+
+        if (!empty($company_id)) {
+            $sql .= " AND c.id = ?";
+            $params[] = $company_id;
+        }
+
+        if (!empty($job_id)) {
+            $sql .= " AND j.id = ?";
+            $params[] = $job_id;
+        }
+
+        if (!empty($search)) {
+            $sql .= " AND (c.company_name LIKE ? OR j.position_name LIKE ? OR a.names LIKE ? OR a.lastname LIKE ? OR a.email LIKE ?)";
+            $searchParam = "%" . $search . "%";
+            $params = array_merge($params, [$searchParam, $searchParam, $searchParam, $searchParam, $searchParam]);
+        }
+
+        $sql .= " GROUP BY a.id, c.company_name, j.position_name, a.names, a.lastname, a.username, a.email, ad.photo
+                  ORDER BY $orderColumn $orderDir
+                  LIMIT ?, ?";
+        $params[] = $start;
+        $params[] = $length;
+
+        $result = ejecutarConsulta($sql, $params);
+        $applicantsList = [];
+
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                // Calcular porcentajes
+                $porcentaje_subidos_cv = $row['total_uploaded_cv'] > 0 ? min(($row['total_uploaded_cv'] / $row['total_uploaded_cv']) * 100, 100) : 0;
+                $porcentaje_aprobados_cv = $row['total_uploaded_cv'] > 0 ? round(min(($row['total_approved_cv'] / $row['total_uploaded_cv']) * 100, 100), 2) : 0;
+                $porcentaje_subidos_other = $row['total_uploaded_other'] > 0 ? round(min(($row['total_uploaded_other'] / $row['total_uploaded_other']) * 100, 100), 2) : 0;
+                $porcentaje_aprobados_other = $row['total_uploaded_other'] > 0 ? round(min(($row['total_approved_other'] / $row['total_uploaded_other']) * 100, 100), 2) : 0;
+
+                $applicantsList[] = [
+                    'company_name' => $row['company_name'],
+                    'job_name' => $row['position_name'],
+                    'id' => $row['id'],
+                    'names' => $row['names'],
+                    'lastname' => $row['lastname'],
+                    'username' => $row['username'] ?? 'N/A',
+                    'email' => $row['email'] ?? 'N/A',
+                    'photo' => $row['photo'] ?? null,
+                    'porcentaje_subidos_cv' => $porcentaje_subidos_cv,
+                    'porcentaje_subidos_other' => $porcentaje_subidos_other,
+                    'porcentaje_aprobados_cv' => $porcentaje_aprobados_cv,
+                    'porcentaje_aprobados_other' => $porcentaje_aprobados_other
+                ];
+            }
+        }
+
+        return $applicantsList;
+    }
 }
+?>

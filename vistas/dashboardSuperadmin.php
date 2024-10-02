@@ -10,7 +10,7 @@ if (
     $_SESSION['user_type'] !== 'user' ||
     $_SESSION['user_role'] !== 'superadmin'
 ) {
-    header("Location: ../../login.php"); // Asegúrate de que esta sea la URL correcta de login
+    header("Location: login"); // Asegúrate de que esta sea la URL correcta de login
     exit();
 }
 
@@ -241,7 +241,7 @@ require 'layout/sidebar.php';
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <!-- Tu script personalizado -->
-<script src="scripts/dashboardSuperadmin.js"></script>
+<script src="/documenta/vistas/scripts/dashboardSuperadmin.js"></script>
 
 <?php
 require 'layout/footer.php';

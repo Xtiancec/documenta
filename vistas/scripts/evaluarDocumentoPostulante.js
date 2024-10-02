@@ -1,4 +1,4 @@
-$(document).ready(function () {
+    $(document).ready(function () {
     // Inicializa DataTable con los botones de exportación y Tablesaw para las columnas dinámicas
     function inicializarDataTable() {
         $('#documentTable').DataTable({
@@ -9,7 +9,7 @@ $(document).ready(function () {
             lengthMenu: [10, 25, 50, 100],
             displayLength: 25,
             ajax: {
-                url: "../controlador/AdminDocumentApplicantController.php?op=listarDocumentos",
+                url: "/documenta/controlador/AdminDocumentApplicantController.php?op=listarDocumentos",
                 type: "GET",
                 dataSrc: ''
             },
@@ -78,7 +78,7 @@ $(document).ready(function () {
 
     // Marcar documento como revisado
     window.marcarRevisado = function (id) {
-        $.post("../controlador/AdminDocumentApplicantController.php?op=marcarRevisado", { document_id: id }, function (response) {
+        $.post("/documenta/controlador/AdminDocumentApplicantController.php?op=marcarRevisado", { document_id: id }, function (response) {
             try {
                 var jsonResponse = JSON.parse(response);
                 if (jsonResponse.status) {
@@ -126,7 +126,7 @@ $(document).ready(function () {
             preConfirm: (adminObservation) => {
                 return new Promise((resolve) => {
                     $.ajax({
-                        url: '../controlador/AdminDocumentApplicantController.php?op=evaluarDocumento',
+                        url: '/documenta/controlador/AdminDocumentApplicantController.php?op=evaluarDocumento',
                         type: 'POST',
                         data: {
                             document_id: docId,

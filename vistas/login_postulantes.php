@@ -9,7 +9,7 @@ if (
     $_SESSION['user_type'] === 'applicant' &&
     $_SESSION['user_role'] === 'postulante'
 ) {
-    header("Location: applicant_details.php");
+    header("Location: applicant_details");
     exit();
 }
 ?>
@@ -17,37 +17,33 @@ if (
 <html lang="en">
 
 <head>
-    <!-- [Incluye aquí el mismo <head> que en la plantilla proporcionada] -->
+    <!-- Metadatos -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Responsive a ancho de pantalla -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Login de Postulantes">
+    <meta name="description" content="Login de Usuarios">
     <meta name="author" content="Tu Nombre">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="../app/template/images/favicon.png">
-    <title>Login Postulantes - ANDINA</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/documenta/app/template/images/LOGO_FONDO_TRANSPARENTE.png">
+    <title>LOGIN POSTULANTES - ANDINA</title>
     <!-- Bootstrap Core CSS -->
-    <link href="../app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/documenta/app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Page CSS -->
-    <link href="../app/template/css/pages/login-register-lock.css" rel="stylesheet">
+    <link href="/documenta/app/template/css/pages/login-register-lock.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../app/template/css/style.css" rel="stylesheet">
-    <!-- You can change the theme colors from here -->
-    <link href="../app/template/css/colors/default-dark.css" id="theme" rel="stylesheet">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <link href="/documenta/app/template/css/style.css" rel="stylesheet">
+    <!-- Theme Colors -->
+    <link href="/documenta/app/template/css/colors/default-dark.css" id="theme" rel="stylesheet">
     <!-- SweetAlert2 para mensajes elegantes -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- jQuery, Popper.js y Bootstrap JS -->
-    <script src="../app/template/plugins/jquery/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha512-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGaNfTT4b5gXq1Ua37gHmqZVJ9lOgqTFw/FtIpP9r0CjCBwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="../app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- jQuery -->
+    <script src="/documenta/app/template/plugins/jquery/jquery.min.js"></script>
+    <!-- Popper.js y Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="/documenta/app/template/plugins/bootstrap/js/bootstrap.min.js"></script>
     <!-- Tu script personalizado -->
-    <script src="scripts/login_postulante.js"></script>
+    <script src="/documenta/vistas/scripts/login_postulante.js"></script>
 </head>
 
 <body>
@@ -61,13 +57,13 @@ if (
     <!-- End Preloader -->
 
     <!-- Main Wrapper -->
-    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../app/template/images/postulantes.png);">
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(/documenta/app/template/images/postulantes.png);">
         <div class="login-box card">
             <div class="card-body">
                 <!-- Formulario de Login -->
                 <form class="form-horizontal form-material" id="frmAccesoPostulante" method="post">
                     <a href="javascript:void(0)" class="text-center db">
-                    <img src="../app/template/images/logo.png" alt="Home" width="300" height="80" />
+                    <img src="/documenta/app/template/images/logo.png" alt="Home" width="300" height="80" />
                         
                     </a>
                     <br>

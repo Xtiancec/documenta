@@ -39,7 +39,7 @@ require 'layout/sidebar.php';
                 </div>
 
                 <div class="table-responsive mb-4 mt-4">
-                    <table id="tbllistado" class="table full-color-table full-muted-table hover-table" style="width:100%">
+                    <table id="tbllistado" class="table color-table inverse-table" style="width:100%">
                         <thead style="background-color: #2A3E52; color: white;">
                             <tr>
                                 <th width="10%">ID</th>
@@ -141,4 +141,4 @@ require 'layout/sidebar.php';
 require 'layout/footer.php';
 ?>
 <!-- Incluye el archivo JavaScript externo -->
-<script src="scripts/documentName.js"></script>
+<script src="/documenta/vistas/scripts/documentName.js"></script>

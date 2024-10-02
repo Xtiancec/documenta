@@ -8,7 +8,7 @@ $(document).ready(function () {
         var formData = new FormData($("#formSupplierDetailsRegister")[0]);
 
         $.ajax({
-            url: "../controlador/SupplierDetailsController.php?op=guardar",
+            url: "/documenta/controlador/SupplierDetailsController.php?op=guardar",
             type: "POST",
             data: formData,
             contentType: false,
@@ -54,7 +54,7 @@ $(document).ready(function () {
         var formData = new FormData($("#formSupplierDetailsUpdate")[0]);
 
         $.ajax({
-            url: "../controlador/SupplierDetailsController.php?op=actualizar",
+            url: "/documenta/controlador/SupplierDetailsController.php?op=actualizar",
             type: "POST",
             data: formData,
             contentType: false,
@@ -88,7 +88,7 @@ $(document).ready(function () {
     // Función para cargar los detalles del proveedor en el panel de detalles
     function cargarDatosProveedor() {
         $.ajax({
-            url: "../controlador/SupplierDetailsController.php?op=mostrar",
+            url: "/documenta/controlador/SupplierDetailsController.php?op=mostrar",
             type: "POST",
             success: function (response) {
                 console.log("Respuesta del servidor:", response);
@@ -123,7 +123,7 @@ $(document).ready(function () {
     // Función para cargar los datos en el formulario de actualización
     function cargarDatosEnFormularioDeActualizacion() {
         $.ajax({
-            url: "../controlador/SupplierDetailsController.php?op=mostrar",
+            url: "/documenta/controlador/SupplierDetailsController.php?op=mostrar",
             type: "POST",
             success: function (response) {
                 console.log("Respuesta del servidor:", response);

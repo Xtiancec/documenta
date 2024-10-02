@@ -18,7 +18,7 @@ $(document).ready(function () {
         var formData = new FormData($(this)[0]);
 
         $.ajax({
-            url: "../controlador/DocumentNameSupplierController.php?op=guardar",
+            url: "/documenta/controlador/DocumentNameSupplierController.php?op=guardar",
             type: "POST",
             data: formData,
             contentType: false,
@@ -70,7 +70,7 @@ $(document).ready(function () {
     // Función para cargar documentos
     function cargarDocumentos() {
         $.ajax({
-            url: "../controlador/DocumentNameSupplierController.php?op=listar",
+            url: "/documenta/controlador/DocumentNameSupplierController.php?op=listar",
             type: "GET",
             success: function (response) {
                 var data = JSON.parse(response);
@@ -104,7 +104,7 @@ $(document).ready(function () {
     $(document).on('click', '.editarDocumento', function () {
         var id = $(this).data('id');
         $.ajax({
-            url: "../controlador/DocumentNameSupplierController.php?op=obtener",
+            url: "/documenta/controlador/DocumentNameSupplierController.php?op=obtener",
             type: "POST",
             data: { id: id },
             success: function (response) {
@@ -124,7 +124,7 @@ $(document).ready(function () {
         e.preventDefault();
         var formData = new FormData($(this)[0]);
         $.ajax({
-            url: "../controlador/DocumentNameSupplierController.php?op=actualizar",
+            url: "/documenta/controlador/DocumentNameSupplierController.php?op=actualizar",
             type: "POST",
             data: formData,
             contentType: false,
@@ -160,7 +160,7 @@ $(document).ready(function () {
         }).then((willDelete) => {
             if (willDelete) {
                 $.ajax({
-                    url: "../controlador/DocumentNameSupplierController.php?op=eliminar",
+                    url: "/documenta/controlador/DocumentNameSupplierController.php?op=eliminar",
                     type: "POST",
                     data: { id: id },
                     success: function (response) {

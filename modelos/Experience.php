@@ -76,27 +76,37 @@ class Experience
     // Mostrar experiencias educativas
     public function mostrarEducacion($applicant_id)
     {
-        $applicant_id = intval($applicant_id);
-        $sql = "SELECT * FROM education_experience WHERE applicant_id = $applicant_id";
-        $result = ejecutarConsulta($sql);
+        $sql = "SELECT 
+                    education_type,
+                    institution,
+                    start_date,
+                    end_date,
+                    duration,
+                    duration_unit,
+                    file_path
+                FROM education_experience
+                WHERE applicant_id = ?
+                ORDER BY start_date DESC";
+        $params = [$applicant_id];
+        $result = ejecutarConsulta($sql, $params);
+        $educaciones = [];
 
-        if ($result !== false && $result->num_rows > 0) {
-            $data = [];
+        if ($result) {
             while ($row = $result->fetch_assoc()) {
-                $data[] = $row;
+                $educaciones[] = $row;
             }
-            return $data;
-        } else {
-            return []; // Retorna un array vacío si no hay resultados
         }
+
+        return $educaciones;
     }
 
     // Mostrar experiencias laborales
     public function mostrarTrabajo($applicant_id)
     {
         $applicant_id = intval($applicant_id);
-        $sql = "SELECT * FROM work_experience WHERE applicant_id = $applicant_id";
-        $result = ejecutarConsulta($sql);
+        $sql = "SELECT * FROM work_experience WHERE applicant_id = ?";
+        $params = [$applicant_id];
+        $result = ejecutarConsulta($sql, $params);
 
         if ($result !== false && $result->num_rows > 0) {
             $data = [];
@@ -113,16 +123,18 @@ class Experience
     public function eliminarEducacion($id)
     {
         $id = intval($id);
-        $sql = "DELETE FROM education_experience WHERE id = $id";
-        return ejecutarConsulta($sql);
+        $sql = "DELETE FROM education_experience WHERE id = ?";
+        $params = [$id];
+        return ejecutarConsulta($sql, $params);
     }
 
     // Eliminar experiencia laboral
     public function eliminarTrabajo($id)
     {
         $id = intval($id);
-        $sql = "DELETE FROM work_experience WHERE id = $id";
-        return ejecutarConsulta($sql);
+        $sql = "DELETE FROM work_experience WHERE id = ?";
+        $params = [$id];
+        return ejecutarConsulta($sql, $params);
     }
 }
 ?>

@@ -192,7 +192,7 @@ require 'layout/footer.php';
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Tu script personalizado -->
-<script src="scripts/dashboardSupplier.js"></script>
+<script src="/documenta/vistas/scripts/dashboardSupplier.js"></script>
 
 <!-- Opcional: Personalizar colores de las tarjetas con CSS -->
 <style>

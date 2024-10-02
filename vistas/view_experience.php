@@ -3,7 +3,7 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión y tiene el rol correcto
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'applicant' || $_SESSION['user_role'] !== 'postulante') {
-    header("Location: ../login.php");
+    header("Location: login_postulantes");
     exit();
 }
 
@@ -35,7 +35,7 @@ require 'layout/sidebar.php';
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="tablaExperienciaEducativa" class="table table-striped table-bordered" style="width:100%">
+                    <table id="tablaExperienciaEducativa" class="table color-table inverse-table" style="width:100%">
                         <thead style="background-color: #2A3E52; color: white;">
                             <tr>
                                 <th>Institución</th>
@@ -90,7 +90,7 @@ require 'layout/sidebar.php';
 
 
 
-<script src="scripts/view_experience.js"></script>
+<script src="/documenta/vistas/scripts/view_experience.js"></script>
 
 
 <?php require 'layout/footer.php'; ?>

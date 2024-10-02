@@ -1,5 +1,3 @@
-// scripts/documentApplicant.js
-
 $(document).ready(function () {
     // Inicialización de Dropify
     $('.dropify').dropify({
@@ -65,7 +63,7 @@ $(document).ready(function () {
                 return xhr;
             },
             type: 'POST',
-            url: '../controlador/DocumentApplicantController.php?op=subirCv',
+            url: '/documenta/controlador/DocumentApplicantController.php?op=subirCv',
             data: formData,
             contentType: false,
             processData: false,
@@ -139,7 +137,7 @@ $(document).ready(function () {
                 return xhr;
             },
             type: 'POST',
-            url: '../controlador/DocumentApplicantController.php?op=subirOtrosDocumentos',
+            url: '/documenta/controlador/DocumentApplicantController.php?op=subirOtrosDocumentos',
             data: formData,
             contentType: false,
             processData: false,
@@ -197,7 +195,7 @@ $(document).ready(function () {
     // Función para cargar los documentos subidos en la tabla
     function cargarDocumentos() {
         $.ajax({
-            url: "../controlador/DocumentApplicantController.php?op=listarDocumentos",
+            url: "/documenta/controlador/DocumentApplicantController.php?op=listarDocumentos",
             type: "GET",
             dataType: "json",
             success: function (jsonResponse) {
@@ -249,7 +247,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "../controlador/DocumentApplicantController.php?op=eliminarDocumento",
+                    url: "/documenta/controlador/DocumentApplicantController.php?op=eliminarDocumento",
                     type: "POST",
                     data: { id: id },
                     dataType: "json",

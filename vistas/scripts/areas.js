@@ -47,7 +47,7 @@ function listarAreas() {
         "lengthMenu": [10, 10, 20, 50],
         "pageLength": 10,
         "ajax": {
-            url: '../controlador/AreasController.php?op=listar',
+            url: '/documenta/controlador/AreasController.php?op=listar',
             type: "GET",
             dataType: "json",
             error: function (e) {
@@ -65,10 +65,9 @@ function listarAreas() {
         ]
     });
 }
-
 // Función mostrar área
 function mostrarArea(id) {
-    $.post('../controlador/AreasController.php?op=mostrar', { id: id }, function (data) {
+    $.post('/documenta/controlador/AreasController.php?op=mostrar', { id: id }, function (data) {
         data = JSON.parse(data);
         $('#area_idUpdate').val(data.id);
         $('#area_nameUpdate').val(data.area_name);
@@ -113,7 +112,7 @@ function guardarArea() {
     }
 
     // Verificar área única antes de guardar
-    $.post('../controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id }, function (response) {
+    $.post('/documenta/controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id }, function (response) {
         response = response.trim().toLowerCase();
         if (response === "área ya existe") {
             $('#area_name').addClass('is-invalid');
@@ -133,7 +132,7 @@ function guardarArea() {
             $('#areaFeedback').text("");
 
             // Proceder a guardar el área
-            $.post('../controlador/AreasController.php?op=guardar', { area_name: area_name, company_id: company_id }, function (response) {
+            $.post('/documenta/controlador/AreasController.php?op=guardar', { area_name: area_name, company_id: company_id }, function (response) {
                 response = response.trim();
                 if (response === "Área registrada correctamente") {
                     $('#formularioArea').modal('hide');
@@ -184,7 +183,7 @@ function actualizarArea() {
     }
 
     // Verificar área única antes de actualizar
-    $.post('../controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id, id: id }, function (response) {
+    $.post('/documenta/controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id, id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response === "área ya existe") {
             $('#area_nameUpdate').addClass('is-invalid');
@@ -204,7 +203,7 @@ function actualizarArea() {
             $('#areaUpdateFeedback').text("");
 
             // Proceder a actualizar el área
-            $.post('../controlador/AreasController.php?op=editar', { id: id, area_name: area_name, company_id: company_id }, function (response) {
+            $.post('/documenta/controlador/AreasController.php?op=editar', { id: id, area_name: area_name, company_id: company_id }, function (response) {
                 response = response.trim();
                 if (response === "Área actualizada correctamente") {
                     $('#formularioActualizarArea').modal('hide');
@@ -253,7 +252,7 @@ function confirmarDesactivacionArea(id) {
 }
 
 function desactivarArea(id) {
-    $.post('../controlador/AreasController.php?op=desactivar', { id: id }, function (response) {
+    $.post('/documenta/controlador/AreasController.php?op=desactivar', { id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response.includes("correctamente")) {
             Swal.fire('Desactivado', 'El área fue desactivada correctamente.', 'success');
@@ -285,7 +284,7 @@ function confirmarActivacionArea(id) {
 }
 
 function activarArea(id) {
-    $.post('../controlador/AreasController.php?op=activar', { id: id }, function (response) {
+    $.post('/documenta/controlador/AreasController.php?op=activar', { id: id }, function (response) {
         response = response.trim().toLowerCase();
         if (response.includes("correctamente")) {
             Swal.fire('Activado', 'El área fue activada correctamente.', 'success');
@@ -326,7 +325,7 @@ function verificarAreaEnAgregar() {
             return;
         }
 
-        $.post('../controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id }, function (response) {
+        $.post('/documenta/controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id }, function (response) {
             response = response.trim().toLowerCase();
             if (response === "área ya existe") {
                 // Mostrar feedback de error
@@ -354,7 +353,7 @@ function verificarAreaEnActualizar() {
             return;
         }
 
-        $.post('../controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id, id: id }, function (response) {
+        $.post('/documenta/controlador/AreasController.php?op=verificar_area', { area_name: area_name, company_id: company_id, id: id }, function (response) {
             response = response.trim().toLowerCase();
             if (response === "área ya existe") {
                 // Mostrar feedback de error

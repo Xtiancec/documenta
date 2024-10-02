@@ -78,7 +78,7 @@ require 'layout/sidebar.php';
     }
 </style>
 
-<script src="scripts/proveedores.js"></script>
+<script src="/documenta/vistas/scripts/proveedores.js"></script>
 
 <?php
 require 'layout/footer.php';

@@ -1,43 +1,80 @@
 <?php
-// UserDocumentsController.php
+// controlador/UserDocumentsController.php
 
 require "../config/Conexion.php";
+require_once "../modelos/Companies.php"; // Nuevo modelo para Empresas
+require_once "../modelos/Jobs.php"; // Nuevo modelo para Puestos
 
 class UserDocumentsController
 {
+
+    public function __construct()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    // Método para verificar si el usuario es superadministrador
+    private function verificarSuperadmin()
+    {
+        if (
+            !isset($_SESSION['user_type']) ||
+            $_SESSION['user_type'] !== 'user' ||
+            !isset($_SESSION['user_role']) ||
+            $_SESSION['user_role'] !== 'superadmin'
+        ) {
+            echo json_encode(['success' => false, 'message' => 'Acceso no autorizado']);
+            exit();
+        }
+    }
     // Listar usuarios con porcentajes de documentos subidos y aprobados
-    public function listarUsuarios() {
+    public function listarUsuarios()
+    {
+        $this->verificarSuperadmin();
+
         // Obtener los filtros de fecha si existen
         $start_date = isset($_GET['start_date']) && !empty($_GET['start_date']) ? $_GET['start_date'] : null;
         $end_date = isset($_GET['end_date']) && !empty($_GET['end_date']) ? $_GET['end_date'] : null;
+        $company_id = isset($_GET['company_id']) && !empty($_GET['company_id']) ? intval($_GET['company_id']) : null;
+        $job_id = isset($_GET['job_id']) && !empty($_GET['job_id']) ? intval($_GET['job_id']) : null;
 
         // Base de la consulta
-        $sqlUsers = "SELECT id, username, email, names, lastname, job_id 
-                     FROM users 
-                     WHERE is_active = 1";
+        $sqlUsers = "SELECT u.id, u.username, u.email, u.names, u.lastname, u.job_id,
+                            ud.photo,
+                            c.company_name, j.position_name
+                     FROM users u
+                     LEFT JOIN user_details ud ON u.id = ud.user_id
+                     LEFT JOIN companies c ON u.company_id = c.id
+                     LEFT JOIN jobs j ON u.job_id = j.id
+                     WHERE u.is_active = 1";
 
-        // Si se proporcionan filtros de fecha, ajustar la consulta para incluir solo usuarios con documentos en ese rango
-        if ($start_date && $end_date) {
-            $sqlUsers .= " AND id IN (
-                                SELECT DISTINCT user_id 
-                                FROM documents 
-                                WHERE created_at BETWEEN ? AND ?
-                           )";
+        $paramsUsers = [];
+
+        // Aplicar filtros si se proporcionan
+        if ($company_id) {
+            $sqlUsers .= " AND u.company_id = ?";
+            $paramsUsers[] = $company_id;
         }
 
-        // Preparar la consulta
-        if ($start_date && $end_date) {
-            $paramsUsers = [$start_date . ' 00:00:00', $end_date . ' 23:59:59'];
-            $resultUsers = ejecutarConsulta($sqlUsers, $paramsUsers);
-        } else {
-            $resultUsers = ejecutarConsulta($sqlUsers);
+        if ($job_id) {
+            $sqlUsers .= " AND u.job_id = ?";
+            $paramsUsers[] = $job_id;
         }
 
+        if ($start_date && $end_date) {
+            $sqlUsers .= " AND u.created_at BETWEEN ? AND ?";
+            $paramsUsers[] = $start_date . ' 00:00:00';
+            $paramsUsers[] = $end_date . ' 23:59:59';
+        }
+
+        $resultUsers = ejecutarConsulta($sqlUsers, $paramsUsers);
         if (!$resultUsers) {
-            // Error en la consulta, mensaje ya mostrado por ejecutarConsulta
+            // Error en la consulta
             echo json_encode(['success' => false, 'message' => 'Error al obtener usuarios.']);
             exit;
         }
+
         $usuarios = [];
 
         while ($user = $resultUsers->fetch_assoc()) {
@@ -68,7 +105,7 @@ class UserDocumentsController
                                     SUM(CASE WHEN d.document_type = 'opcional' AND d.state_id = 2 THEN 1 ELSE 0 END) AS total_aprobados_optional
                                  FROM documents d
                                  WHERE d.user_id = ?";
-            
+
             $paramsUploadedDocs = [$userId];
 
             if ($start_date && $end_date) {
@@ -108,7 +145,10 @@ class UserDocumentsController
 
     // Obtener documentos subidos por un usuario
     public function documentosUsuario()
+    
     {
+        $this->verificarSuperadmin();
+
         // Obtener los filtros de fecha si existen
         $user_id = intval($_POST['user_id']);
         $start_date = isset($_POST['start_date']) && !empty($_POST['start_date']) ? $_POST['start_date'] : null;
@@ -121,7 +161,6 @@ class UserDocumentsController
                     d.admin_observation,
                     d.admin_reviewed,
                     d.uploaded_at,
-                   
                     d.state_id,
                     s.state_name,
                     d.document_type
@@ -155,6 +194,8 @@ class UserDocumentsController
     // Cambiar estado de un documento
     public function cambiarEstadoDocumento()
     {
+        $this->verificarSuperadmin();
+
         $document_id = intval($_POST['document_id']);
         $estado_id = intval($_POST['estado_id']);
         $observacion = isset($_POST['observacion']) ? $_POST['observacion'] : NULL;
@@ -194,8 +235,47 @@ class UserDocumentsController
         }
     }
 
-    // Puedes implementar obtenerPorcentajesUsuario de manera similar si es necesario
-    
+    public function obtenerEmpresas()
+    {
+        $this->verificarSuperadmin();
+
+        $company = new Companies();
+        $empresas = $company->listarEmpresas();
+
+        if (!empty($empresas)) {
+            echo json_encode([
+                'success' => true,
+                'empresas' => $empresas
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontraron empresas.']);
+        }
+    }
+
+    // Obtener lista de Puestos por Empresa
+    public function obtenerPuestosPorEmpresa()
+    {
+        $this->verificarSuperadmin();
+
+        $company_id = isset($_GET['company_id']) ? intval($_GET['company_id']) : 0;
+
+        if ($company_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'ID de empresa inválido.']);
+            exit();
+        }
+
+        $job = new Jobs();
+        $puestos = $job->listarPuestosPorEmpresa($company_id);
+
+        if (!empty($puestos)) {
+            echo json_encode([
+                'success' => true,
+                'puestos' => $puestos
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontraron puestos para esta empresa.']);
+        }
+    }
 }
 
 // Manejo de las acciones
@@ -211,7 +291,15 @@ if (isset($_GET['op'])) {
         case 'cambiarEstadoDocumento':
             $controller->cambiarEstadoDocumento();
             break;
-        // Otros casos si los hay
+            // Otros casos si los hay
+        case 'obtenerPuestosPorEmpresa':
+            $controller->obtenerPuestosPorEmpresa();
+            break;
+        case 'obtenerEmpresas':
+            $controller->obtenerEmpresas();
+            break;
+        default:
+            echo json_encode(['success' => false, 'message' => 'Operación no válida.']);
+            break;
     }
 }
-?>

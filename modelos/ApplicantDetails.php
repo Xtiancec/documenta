@@ -13,12 +13,12 @@ class ApplicantDetails
                 // Generar un nombre único para el archivo
                 $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
                 $filename = 'applicant_' . $applicant_id . '_' . time() . '.' . $ext;
-                $server_path = $_SERVER['DOCUMENT_ROOT'] . '/rh/uploads/applicant_photos/' . $filename; // Ruta física en el servidor
-                $web_path = '/rh/uploads/applicant_photos/' . $filename; // Ruta accesible vía web
+                $server_path = $_SERVER['DOCUMENT_ROOT'] . '/documenta/uploads/applicant_photos/' . $filename; // Ruta física en el servidor
+                $web_path = '/documenta/uploads/applicant_photos/' . $filename; // Ruta accesible vía web
 
                 // Asegurarse de que el directorio exista
-                if (!is_dir($_SERVER['DOCUMENT_ROOT'] . '/rh/uploads/applicant_photos/')) {
-                    mkdir($_SERVER['DOCUMENT_ROOT'] . '/rh/uploads/applicant_photos/', 0755, true);
+                if (!is_dir($_SERVER['DOCUMENT_ROOT'] . '/documenta/uploads/applicant_photos/')) {
+                    mkdir($_SERVER['DOCUMENT_ROOT'] . '/documenta/uploads/applicant_photos/', 0755, true);
                 }
 
                 // Mover el archivo
@@ -57,12 +57,12 @@ class ApplicantDetails
                 // Generar un nombre único para el archivo
                 $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
                 $filename = 'applicant_' . $id . '_' . time() . '.' . $ext;
-                $server_path = $_SERVER['DOCUMENT_ROOT'] . '/rh/uploads/applicant_photos/' . $filename; // Ruta física en el servidor
-                $web_path = '/rh/uploads/applicant_photos/' . $filename; // Ruta accesible vía web
+                $server_path = $_SERVER['DOCUMENT_ROOT'] . '/documenta/uploads/applicant_photos/' . $filename; // Ruta física en el servidor
+                $web_path = '/documenta/uploads/applicant_photos/' . $filename; // Ruta accesible vía web
 
                 // Asegurarse de que el directorio exista
-                if (!is_dir($_SERVER['DOCUMENT_ROOT'] . '/rh/uploads/applicant_photos/')) {
-                    mkdir($_SERVER['DOCUMENT_ROOT'] . '/rh/uploads/applicant_photos/', 0755, true);
+                if (!is_dir($_SERVER['DOCUMENT_ROOT'] . '/documenta/uploads/applicant_photos/')) {
+                    mkdir($_SERVER['DOCUMENT_ROOT'] . '/documenta/uploads/applicant_photos/', 0755, true);
                 }
 
                 // Mover el archivo
@@ -97,20 +97,19 @@ class ApplicantDetails
                 INNER JOIN applicants a ON ad.applicant_id = a.id
                 INNER JOIN jobs j ON a.job_id = j.id
                 WHERE ad.applicant_id = ?";
-        
+
         $params = [$applicant_id];
         $applicant = ejecutarConsultaSimpleFila($sql, $params);
-    
+
         if ($applicant) {
             // Concatenate full name
             $full_name = "{$applicant['names']} {$applicant['lastname']} {$applicant['surname']}";
             $applicant['nombre_completo'] = $full_name;  // Add full name to the response
-    
+
             return $applicant;
         } else {
             return null;
         }
     }
-    
 }
 ?>

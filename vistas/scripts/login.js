@@ -1,5 +1,3 @@
-// scripts/login.js
-
 $(document).ready(function () {
     $("#frmAcceso").on("submit", function (e) {
         e.preventDefault(); // Evitar el envío normal del formulario
@@ -17,11 +15,11 @@ $(document).ready(function () {
             return;
         }
 
-        // Enviar la solicitud AJAX
+        // Enviar la solicitud AJAX con la ruta corregida
         $.ajax({
-            url: "../controlador/LoginController.php?op=verificar",
+            url: "/documenta/controlador/LoginController.php?op=verificar", // Ruta corregida
             method: "POST",
-            data: { username: username, password: password }, // Enviar 'password'
+            data: { username: username, password: password },
             dataType: "json",
             success: function (data) {
                 if (data.success) {
@@ -29,16 +27,16 @@ $(document).ready(function () {
                     if (data.type === 'user') {
                         switch (data.role) {
                             case "superadmin":
-                                window.location.href = "dashboardSuperadmin.php"; 
+                                window.location.href = "dashboardSuperadmin"; 
                                 break;
                             case "adminrh":
-                                window.location.href = "dashboardAdminRH.php"; 
+                                window.location.href = "dashboardAdminRH"; 
                                 break;
                             case "adminpr":
-                                window.location.href = "dashboardAdminPR.php"; 
+                                window.location.href = "dashboardAdminPR"; 
                                 break;
                             case "user":
-                                window.location.href = "dashboardUser.php"; 
+                                window.location.href = "dashboardUser"; 
                                 break;
                             default:
                                 Swal.fire({
@@ -48,9 +46,9 @@ $(document).ready(function () {
                                 });
                         }
                     } else if (data.type === 'applicant') {
-                        window.location.href = "dashboardApplicant.php"; 
+                        window.location.href = "dashboardApplicant"; 
                     } else if (data.type === 'supplier') {
-                        window.location.href = "dashboardSupplier.php"; 
+                        window.location.href = "supplier_dashboard"; 
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -74,9 +72,6 @@ $(document).ready(function () {
                 });
                 console.error("Error en la solicitud AJAX: ", status, error);
                 console.error("Respuesta del servidor: ", xhr.responseText);
-            },
-            complete: function () {
-                // Rehabilitar el botón o ocultar el preloader si es necesario
             }
         });
     });

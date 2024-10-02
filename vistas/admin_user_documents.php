@@ -1,11 +1,18 @@
 <?php
-// admin_user_documents.php
+// vistas/admin_user_documents.php
 
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Verificar si el usuario ha iniciado sesión y es superadministrador
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'user' || $_SESSION['user_role'] !== 'superadmin') {
-    header("Location: ../login.php");
+if (
+    !isset($_SESSION['user_type']) ||
+    $_SESSION['user_type'] !== 'user' ||
+    !isset($_SESSION['user_role']) ||
+    $_SESSION['user_role'] !== 'superadmin'
+) {
+    header("Location: login");
     exit();
 }
 
@@ -14,14 +21,33 @@ require 'layout/navbar.php';
 require 'layout/sidebar.php';
 ?>
 
-<!-- Contenedor para los filtros y el DataTable -->
+<!-- Contenedor Principal -->
 <div class="container-fluid mt-4">
     <h3 class="text-themecolor mb-4">Revisión de Documentos de Usuarios</h3>
-    
+
     <!-- Formulario de Filtros -->
     <div class="card mb-4">
         <div class="card-body">
             <form id="filtroForm" class="form-inline">
+                <!-- Filtro por Empresa -->
+                <div class="form-group mb-2">
+                    <label for="companySelect" class="mr-2">Empresa:</label>
+                    <select class="form-control" id="companySelect" name="companySelect">
+                        <option value="">Todas las Empresas</option>
+                        <!-- Opciones dinámicas -->
+                    </select>
+                </div>
+
+                <!-- Filtro por Puesto -->
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="positionSelect" class="mr-2">Puesto:</label>
+                    <select class="form-control" id="positionSelect" name="positionSelect" disabled>
+                        <option value="">Todos los Puestos</option>
+                        <!-- Opciones dinámicas -->
+                    </select>
+                </div>
+
+                <!-- Filtros por Fecha -->
                 <div class="form-group mb-2">
                     <label for="startDate" class="mr-2">Fecha Inicio:</label>
                     <input type="date" class="form-control" id="startDate" name="startDate">
@@ -30,6 +56,8 @@ require 'layout/sidebar.php';
                     <label for="endDate" class="mr-2">Fecha Fin:</label>
                     <input type="date" class="form-control" id="endDate" name="endDate">
                 </div>
+
+                <!-- Botones de Acción -->
                 <button type="submit" class="btn btn-primary mb-2">Aplicar Filtro</button>
                 <button type="button" id="resetFilter" class="btn btn-secondary mb-2 ml-2">Resetear Filtro</button>
             </form>
@@ -43,13 +71,16 @@ require 'layout/sidebar.php';
                 <table id="usuariosTable" class="table color-table inverse-table" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Subidos Obligatorios (%)</th>
-                            <th>Subidos Opcionales (%)</th>
-                            <th>Aprobados Obligatorios (%)</th>
-                            <th>Aprobados Opcionales (%)</th>
-                            <th>Acción</th>
+                            <th width="15%">Empresa</th>
+                            <th width="15%">Puesto</th>
+                            <th width="15%">Nombre</th>                           
+                            <th width="10%">Apellido</th>
+                            <th width="15%">Foto</th>
+                            <th width="5%">Subidos Obligatorios (%)</th>
+                            <th width="5%">Subidos Opcionales (%)</th>
+                            <th width="5%">Aprobados Obligatorios (%)</th>
+                            <th width="5%">Aprobados Opcionales (%)</th>
+                            <th width="10%">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,32 +134,33 @@ require 'layout/sidebar.php';
     </div>
 </div>
 
+<!-- Modal para mostrar imagen ampliada -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <img src="" id="modalImage" class="img-fluid" alt="Imagen">
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Librerías Necesarias -->
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap CSS y JS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<!-- DataTables CSS y JS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" />
-<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
-<!-- Toastify CSS y JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- CSS -->
+<!-- Bootstrap CSS -->
+
 
 <style>
     #usuariosTable thead th {
         background-color: #343a40;
         color: white;
         text-align: center;
-        padding: 10px;
+        padding: 20px;
     }
 </style>
 
-<script src="scripts/user_documents.js"></script>
+<!-- Custom JavaScript -->
+<script src="/documenta/vistas/scripts/user_documents.js"></script>
 
 <?php
 require 'layout/footer.php';

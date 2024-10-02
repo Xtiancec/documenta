@@ -123,7 +123,7 @@ require 'layout/sidebar.php';
                     </div>
                 </div>
 
-                <script src="scripts/companies.js"></script>
+                <script src="/documenta/vistas/scripts/companies.js"></script>
             </div>
         </div>
     </div>

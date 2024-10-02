@@ -16,7 +16,7 @@ function Init() {
 function listar() {
     tabla = $('#tbllistado').DataTable({
         "ajax": {
-            url: '../controlador/DocumentNameController.php?op=listar',
+            url: '/documenta/controlador/DocumentNameController.php?op=listar',
             type: "GET",
             dataType: "json",
             error: function (e) {
@@ -58,7 +58,7 @@ function listar() {
 
 // Función para mostrar los datos en el modal de actualización
 function mostrar(id) {
-    $.post('../controlador/DocumentNameController.php?op=mostrar', { id: id }, function (data) {
+    $.post('/documenta/controlador/DocumentNameController.php?op=mostrar', { id: id }, function (data) {
         const result = JSON.parse(data);
         if (result) {
             $('#idUpdate').val(result.id);
@@ -81,7 +81,7 @@ function guardar() {
         return;
     }
 
-    $.post('../controlador/DocumentNameController.php?op=guardar', { documentName: documentName }, function (response) {
+    $.post('/documenta/controlador/DocumentNameController.php?op=guardar', { documentName: documentName }, function (response) {
         if (response.includes("correctamente")) {
             $('#formularioregistros').modal('hide');
             showToast(response, "success");
@@ -105,7 +105,7 @@ function actualizar() {
         return;
     }
 
-    $.post('../controlador/DocumentNameController.php?op=editar', { id: id, documentName: documentName }, function (response) {
+    $.post('/documenta/controlador/DocumentNameController.php?op=editar', { id: id, documentName: documentName }, function (response) {
         if (response.includes("correctamente")) {
             $('#formularioActualizar').modal('hide');
             showToast(response, "success");
@@ -183,7 +183,7 @@ function confirmarEliminacion(id) {
 
 // Función para desactivar un documento
 function desactivar(id) {
-    $.post('../controlador/DocumentNameController.php?op=desactivar', { id: id }, function (response) {
+    $.post('/documenta/controlador/DocumentNameController.php?op=desactivar', { id: id }, function (response) {
         if (response.includes("correctamente")) {
             showToast(response, "success");
             tabla.ajax.reload(null, false);
@@ -215,7 +215,7 @@ function confirmarActivacion(id) {
 
 // Función para activar un documento
 function activar(id) {
-    $.post('../controlador/DocumentNameController.php?op=activar', { id: id }, function (response) {
+    $.post('/documenta/controlador/DocumentNameController.php?op=activar', { id: id }, function (response) {
         if (response.includes("correctamente")) {
             showToast(response, "success");
             tabla.ajax.reload(null, false);

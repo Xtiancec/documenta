@@ -31,7 +31,7 @@ function listar() {
         lengthMenu: [10, 20, 50],
         pageLength: 10,
         ajax: {
-            url: '../controlador/ProveedoresController.php?op=listarProveedores',
+            url: '/documenta/controlador/ProveedoresController.php?op=listarProveedores',
             type: "GET",
             dataType: "json",
             dataSrc: 'proveedores',  // Asegurado
@@ -98,7 +98,7 @@ $(document).on('click', '.btn-ver-documentos', function () {
 // Cargar los documentos subidos por el proveedor
 function cargarDocumentosProveedor(proveedorId) {
     $.ajax({
-        url: '../controlador/ProveedoresController.php?op=documentosProveedor',
+        url: '/documenta/controlador/ProveedoresController.php?op=documentosProveedor',
         method: 'POST',
         data: { proveedor_id: proveedorId },
         dataType: 'json',
@@ -236,7 +236,7 @@ function cambiarEstadoDocumento(documentId, estadoId, proveedorId) {
     var observacion = null; // Placeholder para observaciones
 
     $.ajax({
-        url: '../controlador/ProveedoresController.php?op=cambiarEstadoDocumento',
+        url: '/documenta/controlador/ProveedoresController.php?op=cambiarEstadoDocumento',
         method: 'POST',
         data: { 
             document_id: documentId, 
@@ -349,7 +349,7 @@ function actualizarEstadoDocumento(documentId, estadoId) {
 // Actualizar los porcentajes del proveedor
 function actualizarPorcentajesProveedor(proveedorId) {
     $.ajax({
-        url: '../controlador/ProveedoresController.php?op=obtenerPorcentajesProveedor',
+        url: '/documenta/controlador/ProveedoresController.php?op=obtenerPorcentajesProveedor',
         method: 'POST',
         data: { proveedor_id: proveedorId },
         dataType: 'json',

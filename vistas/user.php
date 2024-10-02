@@ -40,17 +40,17 @@ require 'layout/sidebar.php';
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header text-white d-flex justify-content-between align-items-center bg-primary">
-                    <h5 class="mb-0">Lista de Usuarios</h5>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#formularioregistros">
+                <div class="card-header text-white d-flex justify-content-between align-items-center bg-inverse">
+                    <h5 class="mb-0 font-weight-bold" style="color: white; font-weight: bold;">Lista de Usuarios</h5>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#formularioregistros">
                         <i class="fa fa-plus"></i> Agregar Usuario
                     </button>
                 </div>
                 <div class="card-body">
                     <!-- Tabla para listar usuarios -->
                     <div class="table-responsive">
-                        <table id="tbllistado" class="table table-striped table-bordered" style="width:100%">
-                            <thead class="thead-dark">
+                        <table id="tbllistado" class="table color-table inverse-table" style="width:100%">
+                            <thead >
                                 <tr>
                                     <th>ID</th>
                                     <th>Empresa</th>
@@ -380,8 +380,18 @@ require 'layout/sidebar.php';
     </div>
 </div>
 
+<style>
+    #tbllistado thead th {
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+
 <!-- Carga de scripts -->
 <?php
 require 'layout/footer.php';
 ?>
-<script src="scripts/user.js"></script>
+<script src="/documenta/vistas/scripts/user.js"></script>

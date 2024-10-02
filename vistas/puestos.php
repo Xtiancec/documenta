@@ -153,4 +153,4 @@ require 'layout/sidebar.php';
 <?php
 require 'layout/footer.php';
 ?>
-<script src="scripts/job_positions.js"></script>
+<script src="/documenta/vistas/scripts/job_positions.js"></script>

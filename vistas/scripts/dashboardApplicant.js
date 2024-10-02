@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadDashboardData() {
         console.log('Cargando datos...');
 
-        fetch(`../controlador/DashboardApplicantController.php?applicant_id=${applicantId}&t=${new Date().getTime()}`, {
+        fetch(`/documenta/controlador/DashboardApplicantController.php?applicant_id=${applicantId}&t=${new Date().getTime()}`, {
             cache: 'no-store',
             headers: {
                 'Cache-Control': 'no-cache, no-store, must-revalidate',

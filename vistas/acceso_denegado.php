@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Acceso Denegado</title>
-    <link href="../app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/documenta/app/template/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             display: flex;

@@ -1,4 +1,6 @@
+
 <?php 
+// global.php
 // IP del servidor de base de datos
 define("DB_HOST", "localhost");
 
